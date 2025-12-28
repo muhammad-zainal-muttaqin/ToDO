@@ -8,7 +8,7 @@
 
 ### Logika Pelabelan
 
-> **⚠️ PENTING:** Label bukan deskripsi kondisi saat ini, tapi **KAPAN PANEN**
+> Label bukan deskripsi kondisi saat ini, tapi **kapan panen**
 
 | Label | Artinya | Contoh (Survey Desember) |
 |-------|---------|--------------------------|
@@ -62,12 +62,12 @@ dari NOL untuk setiap           (koreksi jika salah)
 objek                           
 
 Waktu: ████████████████   →     Waktu: ████░░░░░░░░░░
-       (Sangat Lama)                   (Jauh Lebih Cepat)
+       (Lama)                          (Lebih Cepat)
 ```
 
 ### 2.2 Tools Rekomendasi
 
-#### 🥇 UTAMA: Tanpa Internet (OFFLINE)
+#### Utama: Tanpa Internet (OFFLINE)
 
 **Tool: AnyLabeling**
 
@@ -88,12 +88,12 @@ pip install anylabeling
 ```
 
 **Fitur Auto-Label di AnyLabeling:**
-1. ✅ Load custom YOLO model
-2. ✅ SAM (Segment Anything) untuk segmentasi otomatis
-3. ✅ Batch processing
-4. ✅ Export ke format YOLO
+1. Load custom YOLO model
+2. SAM (Segment Anything) untuk segmentasi otomatis
+3. Batch processing
+4. Export ke format YOLO
 
-#### 🥈 ALTERNATIF: Dengan Internet (ONLINE)
+#### Alternatif: Dengan Internet (ONLINE)
 
 **Tool: Roboflow**
 
@@ -150,7 +150,7 @@ pip install anylabeling
 │ • Pakar mengecek hasil auto-label satu per satu             │
 │ • Jika kotak salah → geser/hapus/tambah                     │
 │ • Jika kelas salah → ubah kelas                             │
-│ • ⚡ INI JAUH LEBIH CEPAT daripada dari nol!                │
+│ • Ini lebih cepat daripada label dari nol                   │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐

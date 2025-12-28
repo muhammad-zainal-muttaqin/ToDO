@@ -1,6 +1,6 @@
 # KHUSUS TUGAS ZAINAL - RINGKASAN LENGKAP
 
-**Nama:** Zainal
+**Nama:** Zainal  
 **Posisi:** Supervisor (Tim 11 - Terpisah dari 10 kelompok surveyor)
 
 ---
@@ -30,9 +30,9 @@
 
 ---
 
-## ✅ MASTER CHECKLIST ZAINAL
+## MASTER CHECKLIST ZAINAL
 
-### 🔴 PRIORITAS TINGGI (Segera)
+### Prioritas Tinggi (Segera)
 
 #### Persiapan Batch 1
 - [ ] Siapkan meteran pita dan logbook
@@ -47,7 +47,7 @@
 - [ ] Foto 4 sisi dengan batang dalam frame
 - [ ] Hubungkan ID foto dengan data ukuran
 
-### 🟡 PRIORITAS SEDANG (Segera setelah Batch 1)
+### Prioritas Sedang (Setelah Batch 1)
 
 #### Persiapan Auto-Labeling
 - [ ] Install AnyLabeling
@@ -67,7 +67,7 @@
 - [ ] Sesi validasi dengan pakar
 - [ ] Export final dataset
 
-### 🟢 PRIORITAS RENDAH (Untuk Batch Selanjutnya)
+### Prioritas Rendah (Batch Selanjutnya)
 
 #### Riset Hardware
 - [ ] Finalisasi pilihan kamera depth (D455 vs D435i)
@@ -84,7 +84,7 @@
 
 ---
 
-## 📁 Daftar File Terkait
+## Daftar File Terkait
 
 | No | File | Isi |
 |----|------|-----|
@@ -97,7 +97,7 @@
 
 ---
 
-## 📞 Kontak & Koordinasi
+## Kontak & Koordinasi
 
 | Pihak | Untuk Keperluan |
 |-------|-----------------|
@@ -107,10 +107,10 @@
 
 ---
 
-## 📝 Catatan Penting
+## Catatan Penting
 
-1. **Zainal TERPISAH dari 10 kelompok** - Tim 11 dengan tugas khusus
-2. **Pencatatan MANUAL** - Aplikasi belum punya fitur input angka
-3. **Prioritas OFFLINE** - Tools auto-label utamakan yang tidak perlu internet
-4. **USB 3.0+ WAJIB** - Untuk tablet yang akan dipakai dengan kamera depth
-5. **Cek cuaca** - Pencahayaan konsisten adalah concern utama
+1. Zainal terpisah dari 10 kelompok - Tim 11 dengan tugas khusus
+2. Pencatatan manual - Aplikasi belum punya fitur input angka
+3. Prioritas tools offline - Auto-label utamakan yang tidak perlu internet
+4. USB 3.0+ diperlukan - Untuk tablet yang dipakai dengan kamera depth
+5. Cek cuaca - Pencahayaan konsisten perlu diperhatikan

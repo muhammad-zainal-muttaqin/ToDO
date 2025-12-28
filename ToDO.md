@@ -24,9 +24,9 @@
 ### 1. SOP Pengambilan Gambar
 
 **Urutan Pengambilan (Sequence):**
-- **Aturan:** Wajib berurutan dan **konsisten**
+- **Aturan:** Berurutan dan konsisten
 - **Arah:** Utara → Timur → Selatan → Barat
-- **Rotasi:** Disepakati **Searah Jarum Jam (Clockwise)** untuk keseragaman seluruh surveyor
+- **Rotasi:** Searah Jarum Jam (Clockwise) untuk keseragaman seluruh surveyor
 - *Alasan:* Agar saat *stitching* atau *counting*, algoritma tahu gambar ke-2 adalah sisi kanan dari gambar ke-1
 
 **Posisi & Jarak:**
@@ -34,8 +34,8 @@
 - **Tinggi Kamera:** 150 cm (Setinggi dada rata-rata, gunakan tripod jika memungkinkan)
 - **Angle:** Lurus ke depan (*Frontal/Eye-level*). Tidak boleh terlalu mendongak
 
-**Komposisi Frame (Wajib):**
-- **Cakupan:** Harus terlihat **Batang Pohon** (sebagai referensi ukuran) dan **Pangkal Pelepah/Tajuk** (tempat buah berada)
+**Komposisi Frame:**
+- **Cakupan:** Harus terlihat Batang Pohon (referensi ukuran) dan Pangkal Pelepah/Tajuk (tempat buah berada)
 - *Alasan:* Tanpa batang, AI tidak punya pembanding untuk membedakan "Buah Kecil difoto dekat" vs "Buah Besar difoto jauh"
 
 ### 2. Setting Kamera
@@ -45,7 +45,7 @@
 | **Device** | Samsung A55 (atau setara) |
 | **Orientasi** | Portrait (Tegak) |
 | **Rasio** | 4:3 (Native Sensor). Jangan 16:9 |
-| **Fitur AI/Beauty** | **OFF** (Wajib dimatikan) |
+| **Fitur AI/Beauty** | OFF (harus dimatikan) |
 | **Flash** | OFF |
 | **Resolusi** | Highest Available |
 
@@ -53,13 +53,13 @@
 
 - Total target: ~1000 gambar
 - Lakukan sortir manual: Buang gambar blur, backlight parah, atau batang tidak terlihat
-- Hanya gambar "Sempurna" yang masuk dataset (target: ~900 gambar)
+- Hanya gambar yang memenuhi standar yang masuk dataset (target: ~900 gambar)
 
 ---
 
 ## BAGIAN 2: TUGAS SPESIFIK SUPERVISOR (ZAINAL) - TIM 11
 
-**Tugas Utama:** Pengumpulan Data "Ground Truth" Fisik pada **100 Pohon Sampel**  
+**Tugas Utama:** Pengumpulan Data "Ground Truth" Fisik pada 100 Pohon Sampel  
 *Catatan: Dilakukan terpisah dari 10 kelompok surveyor biasa*
 
 ### 1. Tujuan & Logika
@@ -72,13 +72,13 @@
 **Target:** 100 Pohon terpilih
 
 **Parameter 1: Batang (Trunk)**
-- Ukur **Keliling Batang** pada ketinggian **150 cm** dari tanah
-- *Syarat:* Saat pohon difoto, titik 150cm ini harus masuk dalam frame foto
+- Ukur Keliling Batang pada ketinggian 150 cm dari tanah
+- Syarat: Saat pohon difoto, titik 150cm ini harus masuk dalam frame foto
 
 **Parameter 2: Buah Sawit (TBS)**
 - Pilih sampel buah (Mewakili ukuran Besar, Sedang, Kecil/Bunga)
-- Ukur **Tinggi Buah** (Vertikal) dan **Keliling Buah** (Horizontal)
-- Catat **Posisi Pelepah**: Lingkar bawah (Tua) atau lingkar atas (Muda)
+- Ukur Tinggi Buah (Vertikal) dan Keliling Buah (Horizontal)
+- Catat Posisi Pelepah: Lingkar bawah (Tua) atau lingkar atas (Muda)
 
 **Alat:** Meteran pita  
 **Pencatatan:** Manual (Logbook/Excel di HP)
@@ -89,7 +89,7 @@
 
 ### 1. Definisi Kelas BBC (Estimasi Panen)
 
-> **Logika:** Label bukan deskripsi kondisi saat ini, tapi **kapan panen**
+> Logika: Label bukan deskripsi kondisi saat ini, tapi **kapan panen**
 
 | Label | Artinya |
 |-------|---------|
@@ -98,7 +98,7 @@
 | **M3 (3 Bulan)** | Panen n+3 |
 | **M4 (4 Bulan)** | Panen n+4 |
 
-**Tambahan:** Labeli juga **Bunga** (prediksi jangka panjang) dan **Batang** (referensi AI)
+**Tambahan:** Labeli juga Bunga (prediksi jangka panjang) dan Batang (referensi AI)
 
 ### 2. Strategi Auto-Labeling
 
@@ -113,7 +113,7 @@
 2. Train model YOLOv8-Nano (Pre-train)
 3. Load model ke AnyLabeling
 4. Jalankan "Auto-Label" pada sisa dataset (~900 gambar)
-5. **Validasi Pakar:** Pakar mengecek hasil auto-label, koreksi jika salah
+5. Validasi Pakar: Pakar mengecek hasil auto-label, koreksi jika salah
 
 ---
 
@@ -123,8 +123,8 @@
 
 ### 1. Kamera Depth (Sensor Kedalaman)
 
-**Syarat Mutlak:**
-- Harus bisa mendeteksi **Angle/Derajat Kemiringan** (IMU)
+**Spesifikasi Minimal:**
+- Harus bisa mendeteksi Angle/Derajat Kemiringan (IMU)
 - Tahan Cahaya Matahari Siang
 
 **Rekomendasi:**
@@ -133,14 +133,14 @@
 | **Intel RealSense D455** | Disarankan untuk outdoor (jangkauan jauh, global shutter) |
 | **Intel RealSense D435i** | Opsi lebih murah, pastikan ada huruf "i" (IMU) |
 
-> **⚠️ Huruf "i" WAJIB ada** - menandakan memiliki IMU (Inertial Measurement Unit) untuk deteksi orientasi kamera
+> Huruf "i" menandakan memiliki IMU (Inertial Measurement Unit) untuk deteksi orientasi kamera
 
 ### 2. Tablet/Monitor
 
 **Fungsi:** Viewfinder kamera depth
 
-**Syarat Kritis:**
-- Port: **USB Type-C 3.0 / 3.1** (Wajib, USB 2.0 tidak cukup bandwidth)
+**Spesifikasi Minimal:**
+- Port: USB Type-C 3.0 / 3.1 (USB 2.0 tidak cukup bandwidth)
 - OS: Android (Kompatibel dengan RealSense SDK)
 - Baterai: Besar (7000mAh+) karena menyuplai daya ke kamera
 

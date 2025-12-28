@@ -11,7 +11,7 @@
 
 | Masalah | Solusi |
 |---------|--------|
-| Warna buah Pra-Matang (M2) dan Mentah (M3) sama-sama hitam | Gunakan **dimensi fisik** sebagai pembeda |
+| Warna buah Pra-Matang (M2) dan Mentah (M3) sama-sama hitam | Gunakan dimensi fisik sebagai pembeda |
 | AI perlu referensi ukuran dalam gambar | Batang yang terukur di 150cm menjadi "penggaris" |
 | Posisi buah mengindikasikan kematangan | Dokumentasi posisi pelepah (atas/bawah) |
 
@@ -50,7 +50,7 @@ Pohon Sawit:
 | **Ketinggian pengukuran** | 150 cm (1,5 meter) dari tanah |
 | **Alat** | Meteran pita (karena batang melengkung) |
 
-> **⚠️ SYARAT KRITIS:** Saat pohon difoto, titik 150cm ini **WAJIB** masuk dalam frame foto. Ini adalah kunci kalibrasi!
+> **Syarat:** Saat pohon difoto, titik 150cm ini harus masuk dalam frame foto. Ini adalah kunci kalibrasi.
 
 #### Parameter 2: BUAH SAWIT (TBS - Tandan Buah Segar)
 
@@ -87,7 +87,7 @@ FORM PENGUKURAN POHON - TIM 11 (ZAINAL)
 Tanggal      : ___/___/______
 Lokasi       : _______________________________
 Nomor Pohon  : _____ / 100
-Cuaca        : ☀️ Cerah / ⛅ Berawan / 🌧️ Hujan
+Cuaca        : Cerah / Berawan / Hujan
 
 BATANG:
 ───────────────────────────────────────────────────
@@ -152,7 +152,7 @@ Foto ID: _______________________________________
                         ↓
 ┌─────────────────────────────────────────────────┐
 │ 5. Foto pohon dari 4 sisi (U-T-S-B)             │
-│    → PASTIKAN titik 150cm masuk frame!          │
+│    → Pastikan titik 150cm masuk frame           │
 └─────────────────────────────────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────┐

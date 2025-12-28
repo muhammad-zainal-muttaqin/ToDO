@@ -10,9 +10,9 @@
 
 | Aspek | Ketentuan |
 |-------|-----------|
-| **Aturan** | Wajib berurutan dan **konsisten** |
+| **Aturan** | Berurutan dan konsisten |
 | **Arah** | Utara → Timur → Selatan → Barat |
-| **Rotasi** | **Searah Jarum Jam (Clockwise)** untuk keseragaman seluruh surveyor |
+| **Rotasi** | Searah Jarum Jam (Clockwise) untuk keseragaman seluruh surveyor |
 
 **Alasan:** Agar saat *stitching* atau *counting*, algoritma tahu gambar ke-2 adalah sisi kanan dari gambar ke-1.
 
@@ -24,13 +24,13 @@
 | **Tinggi Kamera** | 150 cm (setinggi dada) | Gunakan tripod untuk konsistensi, atau patokan leher surveyor |
 | **Angle** | Lurus ke depan (*Frontal/Eye-level*) | Tidak boleh terlalu mendongak, kecuali pohon tinggi (harus dicatat) |
 
-### 1.3 Komposisi Frame (WAJIB)
+### 1.3 Komposisi Frame
 
-**Cakupan yang HARUS terlihat dalam foto:**
-1. ✅ **Batang Pohon** - Sebagai referensi ukuran
-2. ✅ **Pangkal Pelepah/Tajuk** - Tempat buah berada
+**Cakupan yang harus terlihat dalam foto:**
+1. **Batang Pohon** - Sebagai referensi ukuran
+2. **Pangkal Pelepah/Tajuk** - Tempat buah berada
 
-> **⚠️ Alasan Kritis:** Tanpa batang dalam frame, AI tidak punya pembanding untuk membedakan "Buah Kecil difoto dekat" vs "Buah Besar difoto jauh".
+> **Alasan:** Tanpa batang dalam frame, AI tidak punya pembanding untuk membedakan "Buah Kecil difoto dekat" vs "Buah Besar difoto jauh".
 
 ---
 
@@ -40,8 +40,8 @@
 |-----------|------------|------------|
 | **Device** | Samsung A55 (atau setara) | Sebagai kandidat utama |
 | **Orientasi** | Portrait (Tegak) | - |
-| **Rasio** | 4:3 (Native Sensor) | ❌ Jangan 16:9 (memotong atas-bawah) |
-| **Fitur AI/Beauty** | **OFF** | ⚠️ WAJIB dimatikan agar warna buah tidak dimanipulasi |
+| **Rasio** | 4:3 (Native Sensor) | Jangan 16:9 (memotong atas-bawah) |
+| **Fitur AI/Beauty** | OFF | Harus dimatikan agar warna buah tidak dimanipulasi |
 | **Flash** | OFF | - |
 | **Resolusi** | Highest Available | Untuk keperluan zoom saat pelabelan manual |
 
@@ -57,11 +57,11 @@ Target Awal: ~1000 gambar
     [SORTIR MANUAL]
         ↓
 Kriteria Reject:
-- ❌ Gambar blur
-- ❌ Backlight parah  
-- ❌ Batang tidak terlihat
+- Gambar blur
+- Backlight parah  
+- Batang tidak terlihat
         ↓
-Dataset Final: ~900 gambar "Sempurna"
+Dataset Final: ~900 gambar yang memenuhi standar
 ```
 
 ### 3.2 Jadwal Pengambilan
@@ -76,7 +76,7 @@ Pengambilan gambar terdiri dalam beberapa batch:
 
 ## 4. Kondisi Cuaca
 
-> **⚠️ PENTING:** Pencahayaan menjadi *concern* utama. Supaya data konsisten bagus, **WAJIB cek cuaca terlebih dahulu** sebelum pengambilan.
+> Pencahayaan menjadi perhatian utama. Supaya data konsisten, cek cuaca terlebih dahulu sebelum pengambilan.
 
 ---
 
