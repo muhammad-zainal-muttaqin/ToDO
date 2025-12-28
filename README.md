@@ -1,54 +1,54 @@
-# TO DO LIST - PROYEK DETEKSI BUAH SAWIT
+# Dokumentasi Proyek Deteksi Tandan Buah Sawit
+
+## Ikhtisar
+
+Dokumen ini menyediakan panduan teknis untuk proyek deteksi dan klasifikasi tandan buah sawit menggunakan computer vision. Proyek ini mencakup pengumpulan data, labeling, dan pengembangan model untuk estimasi waktu panen.
 
 ---
 
-## Daftar Pertanyaan & Dokumentasi
+## Daftar Dokumen
 
-| No | Pertanyaan | File | Status |
-|----|------------|------|--------|
-| 1 | Persiapan Data Collection | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Draft |
-| 2 | Data: QC, Labeling, Anotasi | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Draft |
-| 3 | Rekomendasi Spesifikasi Alat | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Draft |
-| 4 | Permasalahan Black Bunch | [Q4_Permasalahan_Black_Bunch.md](Q4_Permasalahan_Black_Bunch.md) | Draft |
-| 5 | Permasalahan Counting | [Q5_Permasalahan_Counting.md](Q5_Permasalahan_Counting.md) | Draft |
+| No | Dokumen | Deskripsi | Status |
+|----|---------|-----------|--------|
+| 1 | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Protokol pengumpulan data reguler dan tambahan | Draft |
+| 2 | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Prosedur QC, auto-labeling, dan spesifikasi anotasi | Draft |
+| 3 | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Spesifikasi hardware (kamera depth, tablet) | Draft |
+| 4 | [Q4_Permasalahan_Black_Bunch.md](Q4_Permasalahan_Black_Bunch.md) | Analisis diferensiasi tandan hitam | Draft |
+| 5 | [Q5_Permasalahan_Counting.md](Q5_Permasalahan_Counting.md) | Teknik penghitungan tandan multi-view | Draft |
 
 ---
 
-## Ringkasan Isi Setiap File
+## Ringkasan Isi
 
 ### Q1: Persiapan Data Collection
 
-**A. Data Reguler (800-1000 Pohon)**
-- 10 kelompok surveyor
-- Protokol: 4 sisi per pohon (U-T-S-B, clockwise)
-- Spesifikasi: 12MP, 4:3, Portrait, AI/Beauty OFF
-- Posisi: 2-3m dari batang, tinggi 150cm
-- Frame: harus mencakup batang + tajuk
+Spesifikasi dan protokol pengumpulan data:
 
-**B. Data Tambahan (50-100 Pohon)**
-- PIC: Zainal (Tim 11)
+**Data Reguler (800-1000 Pohon)**
+- 10 kelompok surveyor, 80-100 pohon per kelompok
+- Foto 4 sisi per pohon (U-T-S-B, clockwise)
+- Spesifikasi: 12MP, 4:3, Portrait
+- Jarak: 2-3 meter, tinggi kamera: 150cm
+
+**Data Tambahan (50-100 Pohon)**
+- PIC: Tim 11 (Zainal)
 - Pengukuran fisik: keliling batang @150cm, dimensi tandan
-- Pencatatan manual (logbook)
-- Tujuan: kalibrasi ukuran, validasi posisi
+- Tujuan: kalibrasi ukuran, validasi hipotesis posisi
 
 ---
 
 ### Q2: Data - QC, Labeling, Anotasi
 
-**A. Quality Control**
-- Kriteria reject: blur, backlight, framing salah
+**Quality Control**
+- Kriteria reject: blur, backlight, komposisi salah
 - Estimasi rejection rate: 10-15%
 
-**B. Auto-Labeling**
-- Tool: AnyLabeling (offline, gratis)
-- Workflow: seed data → train YOLOv8-Nano → auto-label → validasi pakar
+**Auto-Labeling**
+- Tool: AnyLabeling (offline, open source)
+- Workflow: seed data (50-100) -> train YOLOv8-Nano -> auto-label -> validasi pakar
 
-**C. Labeling dengan Pakar**
-- Setup: komputer + pakar + supervisor
-- Target: 15-20 gambar/menit jika auto-label akurat
-
-**D. Anotasi**
-- Kelas utama: M1, M2, M3, M4 (estimasi panen)
+**Spesifikasi Anotasi**
+- Kelas utama: M1, M2, M3, M4 (estimasi waktu panen)
 - Kelas tambahan: Bunga, Batang
 - Format: YOLO (.txt)
 
@@ -56,69 +56,94 @@
 
 ### Q3: Rekomendasi Spesifikasi Alat
 
-**Kamera Depth:**
-- Rekomendasi: Intel RealSense D455 (Rp 10-16 juta)
+**Kamera Depth**
+- Utama: Intel RealSense D455 (Rp 10-16 juta)
 - Alternatif: Intel RealSense D435i (Rp 7-12 juta)
 
-**Tablet:**
-- Syarat: USB 3.0+, Snapdragon, baterai >7000mAh
+**Tablet**
+- Syarat: USB 3.0+, Qualcomm Snapdragon, baterai 7000mAh+
 - Rekomendasi: Xiaomi Pad 6 (Rp 4.5-5.5 juta)
-- Alternatif: Samsung Tab S8
+- Alternatif: Samsung Tab S8 (Rp 7-9 juta)
 
-**Budget Total:**
-- Opsi Rekomendasi: ~Rp 18 juta
-- Opsi Budget: ~Rp 15 juta
+**Estimasi Budget**
+- Konfigurasi utama: Rp 18.1 juta
+- Konfigurasi budget: Rp 14.9 juta
 
 ---
 
 ### Q4: Permasalahan Black Bunch
 
-**Masalah:** Tandan pra-matang dan mentah sama-sama hitam
+**Masalah:** Tandan M2, M3, M4 memiliki warna serupa (hitam)
 
-**Aspek pembeda (menurut pakar):**
-1. Ukuran (relatif) - KUAT
-2. Posisi vertikal - KUAT
-3. Tekstur - SEDANG
-4. Warna - LEMAH
+**Aspek pembeda menurut pakar:**
 
-**Rekomendasi:** Ya, perlu preprocessing/ekstraksi fitur eksplisit
-- Ukuran relatif (vs batang)
-- Posisi vertikal dalam frame
-- Fitur tekstur (edge density, LBP)
-- Enhanced color space (HSV, LAB)
-- Depth (jika tersedia)
+| Aspek | Keandalan |
+|-------|-----------|
+| Ukuran relatif | Tinggi |
+| Posisi vertikal | Tinggi |
+| Tekstur | Sedang |
+| Warna | Rendah |
+
+**Rekomendasi:** Ekstraksi fitur tambahan (ukuran relatif, posisi vertikal, tekstur) untuk meningkatkan akurasi klasifikasi
 
 ---
 
 ### Q5: Permasalahan Counting
 
-**Teknik TANPA Depth:**
+**Tantangan:** Double counting dan oklusi pada data multi-view
+
+**Teknik tanpa depth:**
 1. Simple Aggregation (baseline)
-2. Multi-View NMS (recommended)
-3. Video Tracking (untuk video 360°)
+2. Multi-View NMS (rekomendasi)
+3. Video Tracking (untuk data video)
 4. Density Estimation
 
-**Teknik DENGAN Depth:**
+**Teknik dengan depth:**
 5. 3D Reconstruction
-6. Depth-assisted NMS (recommended)
+6. Depth-assisted NMS (rekomendasi)
 7. Multi-View Stereo
-
-**Rekomendasi:**
-- Tanpa depth: Multi-View NMS
-- Dengan depth: Depth-assisted NMS
 
 ---
 
-## File Legacy (Backup)
+## Struktur Folder
 
-File-file berikut adalah versi sebelumnya yang telah digantikan oleh struktur baru:
+```
+ToDO/
+    README.md                           <- Dokumen ini
+    Q1_Persiapan_Data_Collection.md
+    Q2_Data_QC_Labeling_Anotasi.md
+    Q3_Rekomendasi_Spesifikasi_Alat.md
+    Q4_Permasalahan_Black_Bunch.md
+    Q5_Permasalahan_Counting.md
+    legacy/                             <- Arsip dokumen versi sebelumnya
+```
 
-| File | Isi |
-|------|-----|
-| ToDO.md | Overview lama |
-| 1_SOP_Pengambilan_Gambar_RGB.md | SOP pengambilan gambar |
-| 2_Tugas_Spesifik_Zainal_Tim11.md | Tugas pengukuran fisik |
-| 3_Metodologi_Pelabelan_AutoLabeling.md | Metodologi labeling |
-| 4_Spesifikasi_Hardware_Depth_Tablet.md | Spesifikasi hardware detail |
-| 5_Rencana_Penelitian_Novelty.md | Rencana penelitian |
-| 6_Khusus_Tugas_Zainal.md | Checklist Zainal |
+---
+
+## Referensi
+
+### Tools
+
+| Tool | Fungsi | URL |
+|------|--------|-----|
+| AnyLabeling | Labeling + auto-label | github.com/vietanhdev/anylabeling |
+| Ultralytics | YOLOv8 training | github.com/ultralytics/ultralytics |
+| Roboflow | Dataset management | roboflow.com |
+
+### Hardware
+
+| Item | Vendor |
+|------|--------|
+| Intel RealSense | Tokopedia, Shopee |
+| Xiaomi Pad | Mi Store, Tokopedia, Shopee |
+| Samsung Tab | Samsung Store, Tokopedia, Shopee |
+
+---
+
+## Changelog
+
+| Tanggal | Perubahan |
+|---------|-----------|
+| 2024-12 | Restrukturisasi dokumen menjadi 5 topik utama |
+| 2024-12 | Penambahan visualisasi ASCII dan diagram |
+| 2024-12 | Revisi format menjadi lebih profesional |

@@ -1,324 +1,398 @@
 # 5. PERMASALAHAN COUNTING: TEKNIK PENGHITUNGAN TANDAN
 
----
+## 5.1 Deskripsi Masalah
 
-## A. Deskripsi Masalah
+Penghitungan jumlah tandan buah sawit per pohon dari data multi-view (gambar/video) menghadapi beberapa tantangan teknis.
 
-Menghitung jumlah tandan buah sawit per pohon dari gambar/video multi-sisi dengan tantangan:
+### 5.1.1 Tantangan Utama
 
 | Tantangan | Deskripsi |
 |-----------|-----------|
-| **Oklusi** | Tandan tertutup pelepah dari sisi tertentu |
-| **Double counting** | Tandan yang sama terlihat dari 2+ sisi |
-| **Variasi sudut** | Tampilan tandan berbeda dari sudut berbeda |
-| **Multi-view fusion** | Menggabungkan deteksi dari 4/8 sisi |
+| Oklusi | Tandan tertutup oleh pelepah dari sudut tertentu |
+| Double counting | Tandan yang sama terlihat dari beberapa sisi |
+| Variasi tampilan | Tampilan visual tandan berbeda dari sudut berbeda |
+| Multi-view fusion | Penggabungan deteksi dari 4 atau 8 sisi |
+
+### 5.1.2 Ilustrasi Masalah Double Counting
+
+```
+        TAMPAK ATAS POHON
+        
+           UTARA
+              |
+    +---------+---------+
+    |    (A)  |  (B)    |  <- Tandan A terlihat dari
+    |         |         |     sisi Utara dan Barat
+    |   (C)   X   (D)   |  <- Tandan D terlihat dari
+    |         |         |     sisi Timur dan Selatan
+    +---------+---------+
+              |
+           SELATAN
+
+    Jika dihitung per sisi:
+    - Utara:  A, B       = 2
+    - Timur:  B, D       = 2
+    - Selatan: C, D      = 2
+    - Barat:  A, C       = 2
+    -------------------------
+    Total deteksi        = 8
+    Jumlah tandan aktual = 4
+
+    Diperlukan mekanisme de-duplikasi
+```
 
 ---
 
-## B. Teknik Counting TANPA Depth
+## 5.2 Teknik Counting Tanpa Depth
 
-### B.1 Teknik 1: Simple Aggregation
+### 5.2.1 Teknik 1: Simple Aggregation
 
-**Konsep:** Deteksi per sisi, lalu agregasi dengan heuristik.
+**Konsep:** Mendeteksi tandan per sisi, kemudian menggunakan faktor koreksi untuk mengestimasi jumlah unik.
 
+**Formula:**
 ```
-Sisi Utara  → Deteksi: 5 tandan
-Sisi Timur  → Deteksi: 6 tandan
-Sisi Selatan → Deteksi: 4 tandan
-Sisi Barat  → Deteksi: 5 tandan
-─────────────────────────────────
+Estimasi_Tandan = Total_Deteksi x Faktor_Koreksi
+```
+
+**Contoh:**
+```
+Sisi Utara   : 5 tandan
+Sisi Timur   : 6 tandan
+Sisi Selatan : 4 tandan
+Sisi Barat   : 5 tandan
+---------------------------
 Total Deteksi: 20 tandan
-Faktor Overlap: 0.5 (asumsi)
-─────────────────────────────────
+Faktor Koreksi: 0.5
+---------------------------
 Estimasi Final: 10 tandan
 ```
 
-**Kelebihan:**
-- Implementasi sederhana
-- Tidak butuh kalibrasi kompleks
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Implementasi sederhana | Faktor koreksi perlu kalibrasi |
+| Komputasi ringan | Tidak akurat untuk distribusi tidak merata |
 
-**Kekurangan:**
-- Faktor overlap harus dikalibrasi
-- Tidak akurat untuk pohon dengan distribusi tandan tidak merata
+### 5.2.2 Teknik 2: Multi-View NMS (Non-Maximum Suppression)
 
----
+**Konsep:** Memproyeksikan deteksi ke koordinat silinder virtual, kemudian menerapkan clustering untuk menghilangkan duplikat.
 
-### B.2 Teknik 2: NMS (Non-Maximum Suppression) Multi-View
-
-**Konsep:** Proyeksikan deteksi ke koordinat 3D virtual, lalu NMS untuk menghilangkan duplikat.
-
+**Alur Proses:**
 ```
-┌──────────────────────────────────────────────────┐
-│ STEP 1: Deteksi per Sisi                          │
-│ - Jalankan YOLO pada setiap gambar                │
-│ - Output: bounding box + confidence per sisi      │
-└──────────────────────────────────────────────────┘
-                        ↓
-┌──────────────────────────────────────────────────┐
-│ STEP 2: Proyeksi ke Koordinat Silinder           │
-│ - Asumsikan pohon adalah silinder                 │
-│ - Konversi (x, y)_sisi → (θ, z)_silinder         │
-│ - θ = sudut keliling (0°-360°)                   │
-│ - z = tinggi vertikal                            │
-└──────────────────────────────────────────────────┘
-                        ↓
-┌──────────────────────────────────────────────────┐
-│ STEP 3: Clustering / NMS                          │
-│ - Kelompokkan deteksi yang berdekatan di (θ, z)  │
-│ - Gunakan IoU threshold di ruang silinder        │
-│ - Pilih deteksi dengan confidence tertinggi      │
-└──────────────────────────────────────────────────┘
-                        ↓
-┌──────────────────────────────────────────────────┐
-│ STEP 4: Count Unique Objects                      │
-│ - Hitung jumlah cluster                          │
-│ - Output: estimasi tandan unik                   │
-└──────────────────────────────────────────────────┘
++---------------------------------------------------+
+| STEP 1: Deteksi per Sisi                          |
+| - Jalankan YOLO pada setiap gambar                |
+| - Output: bounding box + confidence               |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| STEP 2: Proyeksi ke Koordinat Silinder            |
+| - Asumsi pohon sebagai silinder                   |
+| - Konversi (x, y) pixel ke (theta, z)             |
+|   - theta: sudut keliling (0-360 derajat)         |
+|   - z: tinggi vertikal                            |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| STEP 3: Clustering                                |
+| - Kelompokkan deteksi berdekatan di (theta, z)    |
+| - Gunakan hierarchical clustering atau DBSCAN     |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| STEP 4: Seleksi Representative                    |
+| - Pilih deteksi dengan confidence tertinggi       |
+|   per cluster                                     |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| STEP 5: Count                                     |
+| - Jumlah cluster = jumlah tandan unik             |
++---------------------------------------------------+
+```
+
+**Diagram Proyeksi Silinder:**
+```
+    KOORDINAT IMAGE (per sisi)      KOORDINAT SILINDER
+    
+    +------------------+                 360
+    |                  |                  |
+    | (x,y) pixel      |     theta = side_angle + (x - 0.5) * FOV
+    |        *         |  -->             |
+    |                  |                  *  (theta, z)
+    +------------------+                  |
+          |                              0
+          |
+          v
+    z = y / height     (normalized)
 ```
 
 **Implementasi:**
-
 ```python
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
 
-def cylindrical_projection(bbox, side_angle, image_width, image_height):
+def cylindrical_projection(bbox, side_angle, image_width, image_height, fov=60):
     """
-    Proyeksikan bounding box ke koordinat silinder
+    Memproyeksikan bounding box ke koordinat silinder.
     
-    side_angle: 0 (Utara), 90 (Timur), 180 (Selatan), 270 (Barat)
+    Parameters:
+        bbox: [x1, y1, x2, y2] koordinat bounding box
+        side_angle: sudut sisi (0=Utara, 90=Timur, 180=Selatan, 270=Barat)
+        image_width: lebar gambar dalam pixel
+        image_height: tinggi gambar dalam pixel
+        fov: field of view kamera dalam derajat
+    
+    Returns:
+        tuple: (theta, z) koordinat silinder
     """
-    x_center = (bbox[0] + bbox[2]) / 2 / image_width  # normalized 0-1
+    x_center = (bbox[0] + bbox[2]) / 2 / image_width
     y_center = (bbox[1] + bbox[3]) / 2 / image_height
     
-    # Konversi x ke sudut (asumsi FOV ~60 derajat)
-    fov = 60
     theta = side_angle + (x_center - 0.5) * fov
     theta = theta % 360
     
-    z = y_center  # tinggi relatif
+    z = y_center
     
     return theta, z
 
-def multi_view_nms(detections_all_sides, iou_threshold=0.3):
+def multi_view_nms(detections, distance_threshold=30):
     """
-    NMS di ruang silinder
+    NMS berbasis clustering di ruang silinder.
     
-    detections_all_sides: list of (theta, z, confidence, class)
+    Parameters:
+        detections: list of (theta, z, confidence, class_id)
+        distance_threshold: threshold clustering dalam derajat
+    
+    Returns:
+        list: deteksi unik setelah NMS
     """
-    if len(detections_all_sides) == 0:
+    if len(detections) == 0:
         return []
     
-    # Hierarchical clustering
-    coords = np.array([[d[0], d[1]*360] for d in detections_all_sides])  # scale z
+    coords = np.array([[d[0], d[1] * 360] for d in detections])
     Z = linkage(coords, method='average')
-    clusters = fcluster(Z, t=30, criterion='distance')  # threshold 30 degrees
+    clusters = fcluster(Z, t=distance_threshold, criterion='distance')
     
-    # Ambil deteksi dengan confidence tertinggi per cluster
     unique_detections = []
     for cluster_id in np.unique(clusters):
-        cluster_dets = [d for d, c in zip(detections_all_sides, clusters) if c == cluster_id]
-        best = max(cluster_dets, key=lambda x: x[2])  # highest confidence
+        cluster_dets = [d for d, c in zip(detections, clusters) if c == cluster_id]
+        best = max(cluster_dets, key=lambda x: x[2])
         unique_detections.append(best)
     
     return unique_detections
 ```
 
-**Kelebihan:**
-- Lebih akurat dari simple aggregation
-- Menangani overlap secara eksplisit
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Menangani overlap secara eksplisit | Perlu kalibrasi FOV dan threshold |
+| Lebih akurat dari simple aggregation | Asumsi silinder tidak sempurna |
 
-**Kekurangan:**
-- Butuh kalibrasi FOV dan threshold
-- Asumsi silinder mungkin tidak sempurna
+### 5.2.3 Teknik 3: Tracking-based Counting (Video 360)
 
----
+**Konsep:** Menggunakan object tracking pada video keliling pohon untuk menghitung objek unik.
 
-### B.3 Teknik 3: Tracking-based Counting (untuk Video 360°)
-
-**Konsep:** Gunakan object tracking pada video keliling pohon.
-
+**Alur Tracking:**
 ```
-Frame 1 → Frame 2 → Frame 3 → ... → Frame N
-   ↓         ↓         ↓              ↓
- [Det]    [Track]   [Track]       [Track]
-   ↓         ↓         ↓              ↓
- ID:1,2   ID:1,2,3  ID:1,2,3,4    ID:...
-                                      ↓
-                              Total Unique IDs
+Frame 1    Frame 2    Frame 3    Frame 4    ...    Frame N
+   |          |          |          |                 |
+   v          v          v          v                 v
+ [Det]     [Track]    [Track]    [Track]          [Track]
+   |          |          |          |                 |
+   v          v          v          v                 v
+ID: 1,2    ID: 1,2,3  ID: 1,2,3,4  ID: ...        ID: ...
+                                                      |
+                                                      v
+                                               Total Unique IDs
 ```
 
-**Implementasi dengan ByteTrack/SORT:**
-
+**Implementasi dengan Ultralytics:**
 ```python
 from ultralytics import YOLO
 
-# Load model
 model = YOLO('best.pt')
 
-# Video tracking
 results = model.track(
     source='video_360.mp4',
     tracker='bytetrack.yaml',
     persist=True
 )
 
-# Count unique IDs
 unique_ids = set()
 for frame_result in results:
     if frame_result.boxes.id is not None:
         unique_ids.update(frame_result.boxes.id.tolist())
 
-print(f"Total tandan unik: {len(unique_ids)}")
+total_count = len(unique_ids)
 ```
 
-**Kelebihan:**
-- Sangat akurat jika tracking stabil
-- Natural untuk data video
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Akurasi tinggi jika tracking stabil | Memerlukan data video |
+| Natural untuk video 360 | Tracking dapat gagal pada oklusi besar |
 
-**Kekurangan:**
-- Butuh video (bukan foto)
-- Tracking bisa fail jika oklusi besar
+### 5.2.4 Teknik 4: Density Estimation
 
----
-
-### B.4 Teknik 4: Learned Counting (Density Estimation)
-
-**Konsep:** Model langsung memprediksi density map, lalu integrasi untuk count.
+**Konsep:** Model memprediksi density map, kemudian mengintegrasikan untuk mendapatkan count.
 
 ```
-RGB Image → CNN → Density Map → Integral → Count
+RGB Image --> CNN --> Density Map --> Integration --> Count
+
+    +----------------+     +----------------+
+    |                |     |    . . .       |
+    |  Input Image   | --> |   . . . .      | --> Integral = 10.2
+    |                |     |    . .         |     Count = 10
+    +----------------+     +----------------+
 ```
 
-**Network Architecture:**
-
+**Arsitektur:**
 ```python
 import torch
 import torch.nn as nn
 
 class DensityCounter(nn.Module):
-    def __init__(self, backbone='resnet50'):
+    def __init__(self):
         super().__init__()
-        self.backbone = torch.hub.load('pytorch/vision', backbone, pretrained=True)
-        self.backbone.fc = nn.Identity()
-        
+        self.encoder = nn.Sequential(
+            nn.Conv2d(3, 64, 3, padding=1), nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(64, 128, 3, padding=1), nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(128, 256, 3, padding=1), nn.ReLU(),
+        )
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(2048, 512, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(512, 128, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(128, 1, 4, stride=2, padding=1),
-            nn.ReLU()  # Density harus positif
+            nn.ConvTranspose2d(256, 128, 4, stride=2, padding=1), nn.ReLU(),
+            nn.ConvTranspose2d(128, 64, 4, stride=2, padding=1), nn.ReLU(),
+            nn.Conv2d(64, 1, 1), nn.ReLU()
         )
     
     def forward(self, x):
-        features = self.backbone(x)
+        features = self.encoder(x)
         density = self.decoder(features)
-        count = density.sum(dim=(2,3))  # Integral
+        count = density.sum(dim=(2, 3))
         return density, count
 ```
 
-**Kelebihan:**
-- End-to-end learning
-- Bisa handle crowded scenes
-
-**Kekurangan:**
-- Butuh annotation titik (bukan box)
-- Training lebih sulit
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| End-to-end learning | Memerlukan anotasi titik |
+| Dapat menangani scene padat | Training lebih sulit |
 
 ---
 
-## C. Teknik Counting DENGAN Depth
+## 5.3 Teknik Counting Dengan Depth
 
-### C.1 Teknik 5: 3D Reconstruction + Counting
+### 5.3.1 Teknik 5: 3D Reconstruction
 
-**Konsep:** Bangun point cloud 3D dari RGB-D, lalu deteksi dan count di 3D.
+**Konsep:** Membangun point cloud 3D dari data RGB-D, kemudian melakukan clustering untuk counting.
 
 ```
-RGB-D (4 sisi) → Point Cloud Fusion → 3D Object Detection → Count
+RGB-D (4 sisi) --> Point Cloud per View --> Fusion --> 3D Clustering --> Count
+
+    View 1          View 2          View 3          View 4
+       |               |               |               |
+       v               v               v               v
+   +-------+       +-------+       +-------+       +-------+
+   | * * * |       | * * * |       | * * * |       | * * * |
+   |  * *  |       |  * *  |       |  * *  |       |  * *  |
+   +-------+       +-------+       +-------+       +-------+
+       |               |               |               |
+       +---------------+---------------+---------------+
+                               |
+                               v
+                    +-------------------+
+                    |     Fused PCD     |
+                    |    * * * * * *    |
+                    |     * * * *       |
+                    +-------------------+
+                               |
+                               v
+                    +-------------------+
+                    |     Clustering    |
+                    |     (DBSCAN)      |
+                    +-------------------+
+                               |
+                               v
+                        Count = 12
 ```
 
-**Pipeline:**
-
+**Implementasi:**
 ```python
 import open3d as o3d
 import numpy as np
 
 def create_point_cloud(rgb, depth, intrinsics):
-    """
-    Buat point cloud dari RGB-D
-    """
+    """Membuat point cloud dari RGB-D."""
     rgbd = o3d.geometry.RGBDImage.create_from_color_and_depth(
         o3d.geometry.Image(rgb),
         o3d.geometry.Image(depth),
         depth_scale=1000.0,
         convert_rgb_to_intensity=False
     )
-    
-    pcd = o3d.geometry.PointCloud.create_from_rgbd_image(
-        rgbd, intrinsics
-    )
-    
+    pcd = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd, intrinsics)
     return pcd
 
 def fuse_point_clouds(pcds, transformations):
-    """
-    Gabungkan point cloud dari multiple views
-    """
+    """Menggabungkan point cloud dari multiple views."""
     combined = o3d.geometry.PointCloud()
     for pcd, transform in zip(pcds, transformations):
         pcd_transformed = pcd.transform(transform)
         combined += pcd_transformed
-    
-    # Downsample untuk menghilangkan duplikat
     combined = combined.voxel_down_sample(voxel_size=0.02)
-    
     return combined
 
-def cluster_and_count(pcd, eps=0.1, min_points=100):
-    """
-    Clustering untuk counting object
-    """
+def count_clusters(pcd, eps=0.1, min_points=100):
+    """Menghitung jumlah cluster."""
     labels = np.array(pcd.cluster_dbscan(eps=eps, min_points=min_points))
     n_clusters = labels.max() + 1
-    
     return n_clusters
 ```
 
-**Kelebihan:**
-- Mengeliminasi double counting secara alami
-- Akurasi tinggi
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Eliminasi double counting secara alami | Komputasi berat |
+| Akurasi tinggi | Memerlukan kalibrasi kamera |
 
-**Kekurangan:**
-- Butuh depth sensor
-- Komputasi berat
-- Perlu kalibrasi kamera
+### 5.3.2 Teknik 6: Depth-assisted NMS
 
----
-
-### C.2 Teknik 6: Depth-assisted NMS
-
-**Konsep:** Gunakan depth untuk estimasi posisi 3D, lalu NMS di ruang 3D.
+**Konsep:** Menggunakan depth untuk estimasi posisi 3D, kemudian melakukan NMS berdasarkan jarak 3D.
 
 ```
-RGB → YOLO Detection → (x, y) pixel
-                           ↓
-Depth Map ──────────→ z (kedalaman)
-                           ↓
-                     (X, Y, Z) world
-                           ↓
-                     3D NMS
-                           ↓
-                     Unique Count
+RGB Image --> YOLO --> (x, y) pixel
+                            |
+                            +------+
+                                   |
+Depth Map ---------------------->  z depth
+                                   |
+                                   v
+                            (X, Y, Z) world
+                                   |
+                                   v
+                              3D NMS
+                                   |
+                                   v
+                            Unique Count
+```
+
+**Transformasi Koordinat:**
+```
+         Image Plane                    3D World
+         
+         +--------+                      Z (depth)
+         |        |                       ^
+         |  u,v   |     Z = depth(u,v)    |
+         |   *    |     X = (u-cx)*Z/fx   +---> X
+         |        |     Y = (v-cy)*Z/fy  /
+         +--------+                     Y
 ```
 
 **Implementasi:**
-
 ```python
 def pixel_to_3d(u, v, depth, intrinsics):
-    """
-    Konversi koordinat pixel ke 3D
-    """
+    """Konversi koordinat pixel ke 3D."""
     fx, fy = intrinsics['fx'], intrinsics['fy']
     cx, cy = intrinsics['cx'], intrinsics['cy']
     
@@ -328,32 +402,32 @@ def pixel_to_3d(u, v, depth, intrinsics):
     
     return X, Y, Z
 
-def depth_nms(detections_2d, depth_map, intrinsics, distance_threshold=0.3):
-    """
-    NMS menggunakan jarak 3D
-    """
+def depth_based_nms(detections_2d, depth_map, intrinsics, distance_threshold=0.3):
+    """NMS berdasarkan jarak 3D."""
     detections_3d = []
     
     for det in detections_2d:
-        x_center = (det['bbox'][0] + det['bbox'][2]) / 2
-        y_center = (det['bbox'][1] + det['bbox'][3]) / 2
-        u, v = int(x_center), int(y_center)
+        cx = (det['bbox'][0] + det['bbox'][2]) / 2
+        cy = (det['bbox'][1] + det['bbox'][3]) / 2
+        u, v = int(cx), int(cy)
         
         depth = depth_map[v, u]
         if depth > 0:
             X, Y, Z = pixel_to_3d(u, v, depth, intrinsics)
             detections_3d.append({
-                '3d_pos': (X, Y, Z),
+                'pos_3d': (X, Y, Z),
                 'confidence': det['confidence'],
                 'class': det['class']
             })
     
-    # NMS based on 3D distance
+    # Greedy NMS berdasarkan jarak 3D
     unique = []
     for det in sorted(detections_3d, key=lambda x: -x['confidence']):
         is_duplicate = False
         for u in unique:
-            dist = np.linalg.norm(np.array(det['3d_pos']) - np.array(u['3d_pos']))
+            dist = np.linalg.norm(
+                np.array(det['pos_3d']) - np.array(u['pos_3d'])
+            )
             if dist < distance_threshold:
                 is_duplicate = True
                 break
@@ -363,90 +437,109 @@ def depth_nms(detections_2d, depth_map, intrinsics, distance_threshold=0.3):
     return unique
 ```
 
-**Kelebihan:**
-- Lebih akurat dari 2D NMS
-- Tidak perlu full 3D reconstruction
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Lebih akurat dari 2D NMS | Memerlukan depth per frame |
+| Tidak perlu full 3D reconstruction | Memerlukan kalibrasi |
 
-**Kekurangan:**
-- Butuh depth per frame
-- Perlu kalibrasi
+### 5.3.3 Teknik 7: Multi-View Stereo (Tanpa Depth Sensor)
 
----
-
-### C.3 Teknik 7: Multi-View Stereo (tanpa depth sensor)
-
-**Konsep:** Estimasi depth dari multiple RGB images menggunakan stereo matching.
+**Konsep:** Mengestimasi depth dari multiple RGB images menggunakan stereo matching.
 
 ```
-RGB (4 sisi) → Feature Matching → Triangulasi → Pseudo Depth → 3D Counting
+RGB View 1 ----+
+               |
+RGB View 2 ----+--> Feature Matching --> Triangulation --> Pseudo Depth
+               |
+RGB View 3 ----+
+               |
+RGB View 4 ----+
 ```
 
-**Tools:** OpenCV StereoSGBM, COLMAP, atau learned MVS seperti MVSNet
+**Tools yang dapat digunakan:**
+- OpenCV StereoSGBM
+- COLMAP
+- MVSNet
 
-**Kelebihan:**
-- Tidak butuh depth sensor
-- Bisa digunakan dengan kamera biasa
-
-**Kekurangan:**
-- Akurasi lebih rendah dari sensor depth
-- Komputasi berat
-
----
-
-## D. Perbandingan Teknik
-
-| Teknik | Depth Required | Akurasi | Kompleksitas | Rekomendasi |
-|--------|----------------|---------|--------------|-------------|
-| Simple Aggregation | Tidak | Rendah | Rendah | Baseline |
-| Multi-View NMS | Tidak | Sedang | Sedang | Recommended |
-| Video Tracking | Tidak | Tinggi | Sedang | Untuk video |
-| Density Estimation | Tidak | Sedang | Tinggi | Opsional |
-| 3D Reconstruction | Ya | Tinggi | Tinggi | Advanced |
-| Depth-assisted NMS | Ya | Tinggi | Sedang | Recommended |
-| Multi-View Stereo | Tidak* | Sedang | Tinggi | Alternatif |
+| Kelebihan | Kekurangan |
+|-----------|------------|
+| Tidak memerlukan depth sensor | Akurasi lebih rendah |
+| Menggunakan kamera biasa | Komputasi berat |
 
 ---
 
-## E. Rekomendasi Eksperimen
+## 5.4 Perbandingan Teknik
+
+| ID | Teknik | Depth Required | Akurasi | Kompleksitas |
+|----|--------|----------------|---------|--------------|
+| T1 | Simple Aggregation | Tidak | Rendah | Rendah |
+| T2 | Multi-View NMS | Tidak | Sedang | Sedang |
+| T3 | Video Tracking | Tidak | Tinggi | Sedang |
+| T4 | Density Estimation | Tidak | Sedang | Tinggi |
+| T5 | 3D Reconstruction | Ya | Tinggi | Tinggi |
+| T6 | Depth-assisted NMS | Ya | Tinggi | Sedang |
+| T7 | Multi-View Stereo | Tidak* | Sedang | Tinggi |
+
+---
+
+## 5.5 Desain Eksperimen
+
+| ID | Data | Teknik | Metrik |
+|----|------|--------|--------|
+| E1 | 4 sisi RGB | Simple Aggregation | MAE, RMSE |
+| E2 | 4 sisi RGB | Multi-View NMS | MAE, RMSE |
+| E3 | 8 sisi RGB | Multi-View NMS | MAE, RMSE |
+| E4 | Video 360 | Tracking | MAE, RMSE |
+| E5 | 4 sisi RGB-D | Depth-assisted NMS | MAE, RMSE |
+| E6 | 4 sisi RGB-D | 3D Reconstruction | MAE, RMSE |
+
+### Ground Truth
+
+- Hitungan manual oleh pakar pada 50 pohon sampel
+- Dokumentasi foto dari setiap sisi untuk verifikasi
+
+### Metrik Evaluasi
+
+| Metrik | Formula |
+|--------|---------|
+| MAE (Mean Absolute Error) | mean(abs(predicted - actual)) |
+| RMSE (Root Mean Square Error) | sqrt(mean((predicted - actual)^2)) |
+| Relative Error | abs(predicted - actual) / actual |
+
+---
+
+## 5.6 Rekomendasi
 
 ### Tanpa Depth Sensor
 
 | Prioritas | Teknik | Alasan |
 |-----------|--------|--------|
-| 1 | Multi-View NMS | Balance akurasi dan kompleksitas |
-| 2 | Video Tracking | Jika ada data video 360° |
-| 3 | Simple Aggregation | Sebagai baseline |
+| 1 | Multi-View NMS | Balance antara akurasi dan kompleksitas |
+| 2 | Video Tracking | Akurasi tinggi jika data video tersedia |
+| 3 | Simple Aggregation | Baseline untuk perbandingan |
 
 ### Dengan Depth Sensor
 
 | Prioritas | Teknik | Alasan |
 |-----------|--------|--------|
-| 1 | Depth-assisted NMS | Relatif sederhana, akurat |
-| 2 | 3D Reconstruction | Akurasi tertinggi, tapi kompleks |
+| 1 | Depth-assisted NMS | Akurasi tinggi dengan kompleksitas terkontrol |
+| 2 | 3D Reconstruction | Akurasi tertinggi untuk kasus kompleks |
 
 ---
 
-## F. Eksperimen Komparatif yang Diusulkan
+## 5.7 Ringkasan
 
-| Metode Data | Teknik Counting | Metric |
-|-------------|-----------------|--------|
-| 4 Sisi RGB | Simple Aggregation | MAE vs Ground Truth |
-| 4 Sisi RGB | Multi-View NMS | MAE vs Ground Truth |
-| 8 Sisi RGB | Multi-View NMS | MAE vs Ground Truth |
-| Video 360° | Tracking | MAE vs Ground Truth |
-| 4 Sisi RGB-D | Depth NMS | MAE vs Ground Truth |
-| 4 Sisi RGB-D | 3D Reconstruction | MAE vs Ground Truth |
+### Permasalahan
 
-**Ground Truth:** Hitungan manual oleh pakar pada 50 pohon sampel.
+Penghitungan tandan dari data multi-view menghadapi tantangan double counting dan oklusi.
 
----
+### Solusi Tersedia
 
-## G. Kesimpulan
+1. **Tanpa Depth:** Multi-View NMS dan Video Tracking memberikan hasil yang memadai
+2. **Dengan Depth:** Depth-assisted NMS memberikan peningkatan akurasi signifikan
 
-1. **Tanpa Depth:** Multi-View NMS adalah teknik paling praktis dengan akurasi memadai.
+### Langkah Selanjutnya
 
-2. **Dengan Depth:** Depth-assisted NMS memberikan peningkatan signifikan dengan kompleksitas terkontrol.
-
-3. **Video:** Tracking-based counting sangat efektif jika data video tersedia.
-
-4. **Eksperimen penting:** Bandingkan semua teknik pada ground truth yang sama untuk menentukan metode terbaik.
+- Implementasi Multi-View NMS sebagai baseline
+- Evaluasi pada 50 pohon sampel dengan ground truth
+- Perbandingan dengan teknik lain jika hasil baseline tidak memadai

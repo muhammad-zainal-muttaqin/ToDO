@@ -1,117 +1,159 @@
-# 2. DATA: QUALITY CONTROL, AUTO-LABELING & ANOTASI
+# 2. DATA: QUALITY CONTROL, LABELING, DAN ANOTASI
+
+## 2.1 Ikhtisar
+
+Dokumen ini menjelaskan prosedur pengecekan kualitas data, strategi auto-labeling untuk efisiensi, teknis pelaksanaan labeling dengan pakar, dan spesifikasi anotasi.
 
 ---
 
-## A. Pengecekan Kualitas Data (Quality Control)
+## 2.2 Quality Control (QC)
 
-### A.1 Kriteria Reject
+### 2.2.1 Kriteria Penerimaan
 
 | Kriteria | Deskripsi |
 |----------|-----------|
-| Blur | Gambar tidak fokus/kabur |
-| Backlight | Pencahayaan dari belakang objek terlalu kuat |
-| Batang tidak terlihat | Titik 150cm tidak masuk dalam frame |
-| Framing salah | Tajuk/tandan tidak terlihat |
-| Urutan salah | Tidak mengikuti rotasi U-T-S-B |
+| Fokus | Objek utama (tandan, batang) tajam |
+| Pencahayaan | Merata, tidak backlight |
+| Komposisi | Batang dan tajuk terlihat |
+| Urutan | Sesuai protokol (U-T-S-B) |
+| Metadata | ID pohon terdokumentasi |
 
-### A.2 Prosedur QC
+### 2.2.2 Kriteria Penolakan
+
+| Kategori | Deskripsi | Estimasi % |
+|----------|-----------|------------|
+| Blur | Fokus tidak tajam | 5% |
+| Backlight | Objek gelap karena cahaya belakang | 3% |
+| Komposisi salah | Batang atau tajuk tidak terlihat | 2% |
+| Lainnya | Corrupt file, salah orientasi | 2% |
+| **Total Reject** | | **10-15%** |
+
+### 2.2.3 Prosedur QC
 
 ```
-INPUT: ~4000 foto (1000 pohon × 4 sisi)
-           ↓
-    [SORTIR MANUAL]
-           ↓
-    Buang foto yang tidak memenuhi kriteria
-           ↓
-OUTPUT: ~3400-3600 foto yang memenuhi standar
+INPUT
++------------------------------------------+
+| ~4000 foto (1000 pohon x 4 sisi)         |
++------------------------------------------+
+                    |
+                    v
++------------------------------------------+
+| SORTIR MANUAL                            |
+| - Cek kriteria penolakan                 |
+| - Tandai foto yang tidak memenuhi standar|
++------------------------------------------+
+                    |
+                    v
++------------------------------------------+
+| KLASIFIKASI                              |
+|  [PASS] -> Masuk dataset                 |
+|  [REJECT] -> Dokumentasi alasan          |
++------------------------------------------+
+                    |
+                    v
+OUTPUT
++------------------------------------------+
+| ~3400-3600 foto yang memenuhi standar    |
++------------------------------------------+
 ```
-
-### A.3 Estimasi Rejection Rate
-
-| Kategori | Estimasi % |
-|----------|------------|
-| Blur | 5% |
-| Backlight | 3% |
-| Framing salah | 2% |
-| Lainnya | 2% |
-| **Total Reject** | **~10-15%** |
 
 ---
 
-## B. Auto-Label untuk Pre-Labeling
+## 2.3 Auto-Labeling
 
-### B.1 Tujuan Auto-Labeling
+### 2.3.1 Tujuan
 
-| Tanpa Auto-Label | Dengan Auto-Label |
-|-----------------|-------------------|
-| Pakar menggambar bounding box dari nol | Pakar hanya validasi & koreksi |
-| Waktu: sangat lama | Waktu: jauh lebih cepat |
+Auto-labeling bertujuan untuk menghasilkan anotasi awal (pre-label) yang akan divalidasi oleh pakar. Pendekatan ini mengurangi waktu labeling dibandingkan pembuatan anotasi dari awal.
 
-### B.2 Rekomendasi Tools
+### 2.3.2 Perbandingan Metode
 
-#### Utama: AnyLabeling (Offline)
+| Aspek | Manual dari Awal | Dengan Auto-Label |
+|-------|------------------|-------------------|
+| Tugas pakar | Gambar bounding box | Validasi dan koreksi |
+| Waktu per gambar | 2-5 menit | 15-30 detik |
+| Throughput | 12-30 gambar/jam | 120-240 gambar/jam |
 
-| Aspek | Detail |
-|-------|--------|
-| Website | https://github.com/vietanhdev/anylabeling |
-| Lisensi | Gratis, Open Source |
-| Platform | Windows, Mac, Linux |
-| Fitur | YOLO, SAM (Segment Anything), batch processing |
-| Keunggulan | Tidak perlu internet setelah install |
+### 2.3.3 Tools
 
-**Instalasi:**
-```bash
-pip install anylabeling
-```
+#### Opsi Utama: AnyLabeling (Offline)
 
-#### Alternatif: Roboflow (Online)
+| Aspek | Spesifikasi |
+|-------|-------------|
+| Repository | github.com/vietanhdev/anylabeling |
+| Lisensi | Open Source |
+| Platform | Windows, macOS, Linux |
+| Fitur | YOLO, SAM, batch processing |
+| Instalasi | `pip install anylabeling` |
 
-| Aspek | Detail |
-|-------|--------|
-| Website | https://roboflow.com |
+#### Opsi Alternatif: Roboflow (Online)
+
+| Aspek | Spesifikasi |
+|-------|-------------|
+| Website | roboflow.com |
 | Lisensi | Freemium |
 | Platform | Web-based |
-| Keunggulan | Mudah, kolaborasi tim |
+| Fitur | Auto-label, augmentasi, kolaborasi |
 
-### B.3 Workflow Auto-Labeling
+### 2.3.4 Workflow Auto-Labeling
 
 ```
-STEP 1: SEED DATA
-├── Zainal label manual 50-100 gambar
-├── Gunakan AnyLabeling mode manual
-└── Label: M1, M2, M3, M4, Bunga, Batang
-
-          ↓
-
-STEP 2: TRAIN MODEL AWAL
-├── Train YOLOv8-Nano dengan seed data
-├── Dataset: 50-100 gambar berlabel
-└── Output: model .pt
-
-          ↓
-
-STEP 3: AUTO-LABEL
-├── Load model ke AnyLabeling
-├── Jalankan auto-label pada sisa dataset
-└── Export format YOLO
-
-          ↓
-
-STEP 4: VALIDASI PAKAR
-├── Pakar cek hasil auto-label
-├── Koreksi jika salah
-└── Export final dataset
+FASE 1: SEED DATA
++--------------------------------------------------+
+| Zainal melabel manual 50-100 gambar              |
+| - Menggunakan AnyLabeling mode manual            |
+| - Label: M1, M2, M3, M4, Bunga, Batang           |
++--------------------------------------------------+
+                         |
+                         v
+FASE 2: TRAINING MODEL AWAL
++--------------------------------------------------+
+| Train YOLOv8-Nano dengan seed data               |
+| - Dataset: 50-100 gambar berlabel                |
+| - Output: model weights (.pt)                    |
++--------------------------------------------------+
+                         |
+                         v
+FASE 3: EXPORT MODEL
++--------------------------------------------------+
+| Export model ke format ONNX                      |
+| - Untuk kompatibilitas dengan AnyLabeling        |
++--------------------------------------------------+
+                         |
+                         v
+FASE 4: AUTO-LABEL
++--------------------------------------------------+
+| Load model ke AnyLabeling                        |
+| Jalankan inferensi pada sisa dataset             |
+| - Input: ~3400 gambar                            |
+| - Output: anotasi otomatis                       |
++--------------------------------------------------+
+                         |
+                         v
+FASE 5: VALIDASI PAKAR
++--------------------------------------------------+
+| Pakar mereview hasil auto-label                  |
+| - Koreksi bounding box jika salah posisi         |
+| - Koreksi kelas jika salah klasifikasi           |
+| - Tambah deteksi yang terlewat                   |
++--------------------------------------------------+
+                         |
+                         v
+FASE 6: EXPORT DATASET FINAL
++--------------------------------------------------+
+| Export dalam format YOLO                         |
+| - Split: train (80%) / val (20%)                 |
++--------------------------------------------------+
 ```
 
-### B.4 Script Training YOLOv8 (Python)
+### 2.3.5 Script Training YOLOv8
 
 ```python
 from ultralytics import YOLO
 
-# Load model
+# Load pretrained model
 model = YOLO('yolov8n.pt')
 
-# Training
+# Training configuration
 results = model.train(
     data='dataset.yaml',
     epochs=50,
@@ -126,105 +168,139 @@ model.export(format='onnx')
 
 ---
 
-## C. Teknis Kegiatan Labeling dengan Pakar
+## 2.4 Teknis Labeling dengan Pakar
 
-### C.1 Setup
+### 2.4.1 Konfigurasi Sesi
 
-| Item | Detail |
-|------|--------|
-| Lokasi | Di depan komputer |
-| Peserta | 1 Pakar + Zainal (Supervisor) |
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Lokasi | Ruangan dengan komputer |
+| Durasi sesi | 2-3 jam per sesi |
+| Peserta | 1 pakar + 1 operator (Zainal) |
 | Software | AnyLabeling dengan model pre-trained |
-| Data | Dataset yang sudah di-auto-label |
+| Input | Dataset dengan pre-label |
 
-### C.2 Pembagian Tugas
+### 2.4.2 Pembagian Peran
 
-| Role | Tugas |
-|------|-------|
-| **Pakar** | Validasi label, koreksi kelas, koreksi posisi bounding box |
-| **Zainal** | Navigasi gambar, handle teknis, catat feedback |
+| Peran | Tugas |
+|-------|-------|
+| Pakar | Validasi label, koreksi kelas, koreksi posisi |
+| Operator | Navigasi gambar, operasi teknis, dokumentasi |
 
-### C.3 Workflow Validasi
+### 2.4.3 Alur Validasi per Gambar
 
-1. **Cek bounding box** → Apakah posisi sudah benar?
-2. **Cek kelas** → Apakah klasifikasi sudah benar (M1/M2/M3/M4)?
-3. **Koreksi** → Geser/hapus/tambah bounding box jika perlu
-4. **Next** → Lanjut ke gambar berikutnya
+```
++--------------------------------+
+| 1. Tampilkan gambar            |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 2. Cek bounding box            |
+|    - Posisi sudah benar?       |
+|    - Ukuran sudah sesuai?      |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 3. Cek klasifikasi             |
+|    - Kelas sudah benar?        |
+|    - M1/M2/M3/M4/Bunga/Batang? |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 4. Koreksi jika diperlukan     |
+|    - Geser/resize bounding box |
+|    - Ubah kelas                |
+|    - Hapus false positive      |
+|    - Tambah false negative     |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 5. Simpan dan lanjut           |
++--------------------------------+
+```
 
-### C.4 Keyboard Shortcuts AnyLabeling
+### 2.4.4 Keyboard Shortcuts (AnyLabeling)
 
 | Shortcut | Fungsi |
 |----------|--------|
-| D | Next image |
-| A | Previous image |
-| W | Create rectangle |
-| Delete | Delete selected box |
-| Ctrl+S | Save |
+| D | Gambar berikutnya |
+| A | Gambar sebelumnya |
+| W | Buat bounding box baru |
+| Delete | Hapus bounding box terpilih |
+| Ctrl+S | Simpan |
+| Ctrl+Z | Undo |
 
-### C.5 Target Kecepatan
+### 2.4.5 Target Kecepatan
 
-| Kondisi | Target per Menit |
-|---------|------------------|
-| Auto-label akurat >80% | 15-20 gambar |
-| Auto-label akurat 50-80% | 8-12 gambar |
-| Auto-label akurat <50% | 4-6 gambar |
+| Akurasi Auto-Label | Target per Menit |
+|--------------------|------------------|
+| > 80% | 15-20 gambar |
+| 50-80% | 8-12 gambar |
+| < 50% | 4-6 gambar |
 
 ---
 
-## D. Anotasi: Kelas & Label Tambahan
+## 2.5 Spesifikasi Anotasi
 
-### D.1 Kelas Utama (Estimasi Panen BBC)
+### 2.5.1 Definisi Kelas
 
-| Label | Artinya | Contoh (Survey Desember) |
-|-------|---------|--------------------------|
-| **M1** | Panen 1 bulan lagi | Panen Januari |
-| **M2** | Panen 2 bulan lagi | Panen Februari |
-| **M3** | Panen 3 bulan lagi | Panen Maret |
-| **M4** | Panen 4 bulan lagi | Panen April |
+#### Kelas Utama (Estimasi Panen)
 
-> **Logika:** Label bukan kondisi saat ini, tapi **KAPAN PANEN**
+| Kode | Label | Definisi |
+|------|-------|----------|
+| 0 | M1 | Tandan panen dalam 1 bulan |
+| 1 | M2 | Tandan panen dalam 2 bulan |
+| 2 | M3 | Tandan panen dalam 3 bulan |
+| 3 | M4 | Tandan panen dalam 4 bulan |
 
-### D.2 Kelas Tambahan
+Label mengacu pada estimasi waktu panen, bukan kondisi visual saat ini.
 
-| Kelas | Fungsi |
-|-------|--------|
-| **Bunga** | Prediksi jangka panjang (>4 bulan) |
-| **Batang** | Referensi ukuran untuk AI |
+#### Kelas Tambahan
 
-### D.3 Kelas Opsional (untuk Pertimbangan)
+| Kode | Label | Definisi |
+|------|-------|----------|
+| 4 | Bunga | Bunga sawit (prediksi > 4 bulan) |
+| 5 | Batang | Batang pohon (referensi ukuran) |
 
-| Kelas | Alasan |
-|-------|--------|
-| Pelepah | Untuk segmentasi struktur pohon |
-| Tandan_Kosong | Tandan yang sudah dipanen (jika ada) |
-| Damage | Tandan rusak/sakit (jika relevan) |
+### 2.5.2 Format Anotasi YOLO
 
-### D.4 Format Anotasi
-
-**Struktur Folder:**
+Struktur folder:
 ```
 dataset/
-├── images/
-│   ├── train/
-│   └── val/
-├── labels/
-│   ├── train/
-│   └── val/
-└── dataset.yaml
+    images/
+        train/
+            IMG_001.jpg
+            IMG_002.jpg
+            ...
+        val/
+            IMG_100.jpg
+            ...
+    labels/
+        train/
+            IMG_001.txt
+            IMG_002.txt
+            ...
+        val/
+            IMG_100.txt
+            ...
+    dataset.yaml
 ```
 
-**Format Label YOLO (.txt):**
+Format file label (.txt):
 ```
-# class_id x_center y_center width height (normalized 0-1)
-0 0.5 0.4 0.1 0.15    # M1
-1 0.3 0.6 0.12 0.18   # M2
-2 0.7 0.5 0.08 0.12   # M3
-3 0.2 0.3 0.09 0.14   # M4
-4 0.4 0.8 0.05 0.06   # Bunga
-5 0.5 0.9 0.15 0.25   # Batang
+# class_id x_center y_center width height
+# Nilai dinormalisasi (0-1)
+
+0 0.5000 0.4000 0.1000 0.1500
+1 0.3000 0.6000 0.1200 0.1800
+5 0.5000 0.8500 0.1500 0.3000
 ```
 
-**dataset.yaml:**
+File dataset.yaml:
 ```yaml
 path: ./dataset
 train: images/train
@@ -239,28 +315,45 @@ names:
   5: Batang
 ```
 
+### 2.5.3 Kelas Opsional (Pertimbangan)
+
+| Kelas | Kegunaan |
+|-------|----------|
+| Pelepah | Segmentasi struktur pohon |
+| Tandan_Kosong | Tandan pasca-panen |
+| Rusak | Tandan yang rusak/sakit |
+
+Penambahan kelas opsional tergantung pada kebutuhan analisis.
+
 ---
 
-## E. Checklist Data Pipeline
+## 2.6 Checklist
 
 ### Persiapan
+
 - [ ] Install AnyLabeling
-- [ ] Install Ultralytics
+- [ ] Install Ultralytics (`pip install ultralytics`)
 - [ ] Siapkan struktur folder dataset
+- [ ] Siapkan dataset.yaml
 
 ### Pre-Labeling
-- [ ] Label manual 50-100 gambar (seed)
-- [ ] Train YOLOv8-Nano
+
+- [ ] Label manual 50-100 gambar (seed data)
+- [ ] Training YOLOv8-Nano
+- [ ] Evaluasi mAP pada validation set
 - [ ] Export model ke ONNX
 - [ ] Test auto-label pada 10 gambar
 
 ### Labeling dengan Pakar
+
 - [ ] Koordinasi jadwal dengan pakar
 - [ ] Jalankan auto-label pada full dataset
 - [ ] Sesi validasi dengan pakar
-- [ ] Export final dataset
+- [ ] Export dataset final
 
-### Quality Check
-- [ ] Verifikasi jumlah label per kelas
-- [ ] Cek konsistensi format
+### Verifikasi
+
+- [ ] Cek distribusi label per kelas
+- [ ] Verifikasi format file
 - [ ] Split train/val (80/20)
+- [ ] Backup dataset

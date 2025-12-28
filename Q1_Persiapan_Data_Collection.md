@@ -1,179 +1,341 @@
 # 1. PERSIAPAN DATA COLLECTION
 
----
+## 1.1 Ikhtisar
 
-## A. Spesifikasi & Protokol Pengumpulan Data Reguler (800-1000 Pohon)
-
-### A.1 Tim Pelaksana
-- **Jumlah Kelompok:** 10 kelompok surveyor
-- **Target per Kelompok:** 80-100 pohon
-- **Total Target:** 800-1000 pohon
-
-### A.2 Spesifikasi Kamera
-
-| Parameter | Nilai |
-|-----------|-------|
-| Device | Smartphone dengan kamera ≥12MP |
-| Resolusi | 12 MP (Fix) |
-| Orientasi | Portrait (Tegak) |
-| Rasio | 4:3 (Native Sensor) |
-| Fitur AI/Beauty | OFF |
-| Flash | OFF |
-
-### A.3 Protokol Pengambilan Gambar
-
-#### Urutan Pengambilan (Per Pohon)
-1. Foto 1: Menghadap **Utara**
-2. Foto 2: Menghadap **Timur**
-3. Foto 3: Menghadap **Selatan**
-4. Foto 4: Menghadap **Barat**
-
-> **Rotasi:** Searah Jarum Jam (Clockwise)
-
-#### Posisi Pengambilan
-
-| Parameter | Nilai |
-|-----------|-------|
-| Jarak dari batang | 2-3 meter |
-| Tinggi kamera | 150 cm (setinggi dada) |
-| Sudut | Lurus ke depan (eye-level) |
-
-#### Komposisi Frame
-
-Setiap foto harus mencakup:
-1. **Batang pohon** (termasuk titik 150cm dari tanah)
-2. **Pangkal pelepah/tajuk** (tempat tandan buah berada)
-
-```
-┌─────────────────────────────┐
-│                             │
-│     [TAJUK/PELEPAH]         │
-│        dengan tandan        │
-│                             │
-│                             │
-│       [BATANG POHON]        │
-│           150cm ← ──────────│← Harus terlihat
-│                             │
-└─────────────────────────────┘
-```
-
-#### Kondisi Pengambilan
-
-| Aspek | Ketentuan |
-|-------|-----------|
-| Cuaca | Cek sebelum pengambilan, hindari backlight parah |
-| Waktu | Pagi (07:00-10:00) atau sore (15:00-17:00) untuk pencahayaan optimal |
-| Konsistensi | Semua surveyor mengikuti protokol yang sama |
-
-### A.4 Output Data Reguler
-
-| Item | Jumlah |
-|------|--------|
-| Total pohon | 800-1000 pohon |
-| Foto per pohon | 4 sisi |
-| Total foto | 3200-4000 foto |
-| Setelah QC | ~2800-3600 foto (estimasi 10-15% reject) |
+Dokumen ini menjelaskan spesifikasi dan protokol pengumpulan data untuk proyek deteksi tandan buah sawit. Pengumpulan data dibagi menjadi dua kategori: data reguler dan data tambahan untuk kalibrasi.
 
 ---
 
-## B. Spesifikasi Pengumpulan Data Tambahan (50-100 Pohon)
+## 1.2 Tim Pelaksana
 
-### B.1 Tim Pelaksana
-- **PIC:** Zainal (Supervisor / Tim 11)
-- **Status:** Terpisah dari 10 kelompok surveyor reguler
-- **Target:** 50-100 pohon sampel
+| Kategori | Kelompok | Target | Tugas |
+|----------|----------|--------|-------|
+| Data Reguler | 10 kelompok surveyor | 80-100 pohon/kelompok | Pengambilan foto 4 sisi |
+| Data Tambahan | Tim 11 (Zainal) | 50-100 pohon | Pengukuran fisik + foto |
+| **Total** | **11 kelompok** | **800-1000 pohon** | - |
 
-### B.2 Tujuan Data Tambahan
+---
+
+## 1.3 Pengumpulan Data Reguler (800-1000 Pohon)
+
+### 1.3.1 Spesifikasi Kamera
+
+| Parameter | Nilai | Keterangan |
+|-----------|-------|------------|
+| Resolusi | 12 MP (tetap) | Tidak menggunakan mode auto |
+| Orientasi | Portrait | Posisi vertikal |
+| Rasio | 4:3 | Native sensor, hindari 16:9 |
+| AI/Beauty | OFF | Mencegah manipulasi warna |
+| Flash | OFF | - |
+| Perangkat | Smartphone kamera 12MP+ | Contoh: Samsung A55 |
+
+### 1.3.2 Urutan Pengambilan Gambar
+
+Pengambilan dilakukan dari 4 sisi dengan urutan searah jarum jam:
+
+```
+                          UTARA (Foto 1)
+                              |
+                              |
+                              v
+            +-----------------+-----------------+
+            |                 |                 |
+            |                 |                 |
+  BARAT     |                 |                 |     TIMUR
+  (Foto 4)  |     [POHON]     |                 |    (Foto 2)
+     <------+       X         +------>          |
+            |                 |                 |
+            |                 |                 |
+            +-----------------+-----------------+
+                              |
+                              |
+                              v
+                        SELATAN (Foto 3)
+
+  Urutan: U (1) -> T (2) -> S (3) -> B (4)
+  Rotasi: Clockwise (searah jarum jam)
+```
+
+### 1.3.3 Posisi Pengambilan (Tampak Atas)
+
+```
+                    2-3 meter
+              <----------------->
+
+              +-------------------+
+              |                   |
+              |     SURVEYOR      |
+              |        @          |
+              |       /|\         |
+              |        |          |
+              +-------------------+
+                       |
+                       | 2-3 meter
+                       |
+                       v
+              +-------------------+
+              |                   |
+              |      POHON        |
+              |        #          |
+              |                   |
+              +-------------------+
+```
+
+### 1.3.4 Posisi Pengambilan (Tampak Samping)
+
+```
+                                    +--------------------+
+                                    |                    |
+                                    |   TAJUK/PELEPAH    |  <- harus masuk frame
+                                    |   dengan tandan    |
+                                    |                    |
+                                    +--------------------+
+                                    |                    |
+                              150cm |     BATANG         |
+    SURVEYOR                   +--->|       |            |  <- titik 150cm
+       @                       |    |       |            |     harus terlihat
+      /|\   [KAMERA]           |    |       |            |
+       |    tinggi 150cm ------+    +-------+------------+
+      / \                           |       |            |
+    ------                          |  TANAH             |
+                                    +--------------------+
+
+    <------------ 2-3 meter ------------>
+```
+
+### 1.3.5 Komposisi Frame
+
+Setiap foto harus mencakup elemen berikut:
+
+```
+    +----------------------------------+
+    |                                  |
+    |      TAJUK + TANDAN BUAH         |
+    |      ~~~~~~~~~~~~~~~~~~~~        |
+    |           |||                    |
+    |           |||                    |
+    |        +--|||--+                 |
+    |        |  |||  |                 |
+    |        | BATANG|                 |
+    |   ---->| 150cm |<----            |  <- Titik referensi kalibrasi
+    |        |  |||  |                 |
+    |        +--|||--+                 |
+    |           |||                    |
+    +----------------------------------+
+
+    Elemen wajib:
+    1. Batang pohon (referensi ukuran)
+    2. Titik 150cm dari tanah (kalibrasi)
+    3. Tajuk/pelepah dengan tandan buah
+```
+
+### 1.3.6 Kondisi Pengambilan
+
+| Parameter | Ketentuan |
+|-----------|-----------|
+| Waktu | 07:00-10:00 atau 15:00-17:00 |
+| Cuaca | Cerah atau berawan tipis |
+| Pencahayaan | Hindari backlight (matahari di belakang pohon) |
+| Sudut kamera | Lurus ke depan (eye-level) |
+
+### 1.3.7 Jadwal Batch
+
+| Batch | Waktu | Tipe Data | Target |
+|-------|-------|-----------|--------|
+| 1 | Januari | RGB 4 sisi | 800-1000 pohon |
+| 2 | April | RGB + Depth | TBD |
+
+---
+
+## 1.4 Pengumpulan Data Tambahan (50-100 Pohon)
+
+### 1.4.1 Tujuan
 
 | Tujuan | Penjelasan |
 |--------|------------|
-| **Kalibrasi Ukuran** | Untuk membedakan tandan pra-matang dan mentah yang warnanya mirip |
-| **Validasi Posisi** | Membuktikan hipotesis posisi tandan (tua di bawah, muda di atas) |
-| **Ground Truth** | Data pembanding untuk validasi model AI |
+| Kalibrasi ukuran | Data ukuran fisik untuk membedakan tandan hitam |
+| Validasi hipotesis | Posisi vertikal tandan (tua di bawah, muda di atas) |
+| Ground truth | Referensi validasi model AI |
 
-### B.3 Protokol Pengukuran Fisik
-
-#### Parameter 1: Keliling Batang
-
-| Item | Spesifikasi |
-|------|-------------|
-| Apa yang diukur | Keliling lingkar batang |
-| Ketinggian | 150 cm dari tanah |
-| Alat | Meteran pita |
-| Syarat | Titik pengukuran harus terlihat dalam foto |
-
-#### Parameter 2: Dimensi Tandan Buah
-
-| Item | Spesifikasi |
-|------|-------------|
-| Tinggi tandan | Ukur vertikal (cm) |
-| Keliling tandan | Ukur horizontal (cm) |
-| Posisi pelepah | Catat: atas/tengah/bawah |
-| Sample | Minimal 3 tandan per pohon (mewakili ukuran berbeda) |
-
-### B.4 Pencatatan Data
-
-Karena aplikasi custom belum memiliki fitur input angka, pencatatan dilakukan **manual**:
-
-| Metode | Detail |
-|--------|--------|
-| Logbook | Form cetak yang dibawa ke lapangan |
-| HP | Excel/Notes sebagai backup |
-| Foto ID | Setiap catatan dihubungkan dengan ID foto |
-
-### B.5 Template Form Pengukuran
+### 1.4.2 Hipotesis Biologis
 
 ```
-═══════════════════════════════════════════════════
-FORM PENGUKURAN POHON - DATA TAMBAHAN
-═══════════════════════════════════════════════════
-Tanggal     : ___/___/______
-Pohon No    : _____ / 100
-Cuaca       : Cerah / Berawan / Hujan
+    POHON SAWIT (Tampak Samping)
 
-BATANG:
+    +---------------------------+
+    |      PELEPAH ATAS         |  <- Tandan MUDA (M3/M4)
+    |       ~~O~~O~~            |     belum matang
+    |          |                |
+    |          |                |
+    |      PELEPAH TENGAH       |  <- Tandan TRANSISI
+    |       ~~O~~O~~            |
+    |          |                |
+    |          |                |
+    |      PELEPAH BAWAH        |  <- Tandan TUA (M1/M2)
+    |       ~~O~~O~~            |     mendekati matang
+    |          |                |
+    |      [BATANG]             |
+    |     ... 150cm ...         |  <- Titik pengukuran
+    |          |                |
+    +----------+----------------+
+             TANAH
+```
+
+### 1.4.3 Parameter Pengukuran
+
+#### A. Batang (Trunk)
+
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Pengukuran | Keliling lingkar batang |
+| Ketinggian | 150 cm dari tanah |
+| Alat | Meteran pita (batang melengkung) |
+| Syarat | Titik ukur harus masuk dalam frame foto |
+
+#### B. Tandan Buah Segar (TBS)
+
+| Parameter | Cara Ukur |
+|-----------|-----------|
+| Tinggi tandan | Vertikal, ujung bawah ke ujung atas |
+| Keliling tandan | Horizontal, lingkar terbesar |
+| Posisi pelepah | Atas / Tengah / Bawah |
+| Jumlah sampel | Minimal 3 tandan per pohon |
+
+### 1.4.4 Template Pencatatan
+
+```
+================================================================
+FORM PENGUKURAN POHON - TIM 11
+================================================================
+Tanggal     : ___/___/______
+Lokasi      : _______________________________
+Nomor Pohon : _____ / 100
+Cuaca       : [ ] Cerah  [ ] Berawan  [ ] Hujan
+
+BATANG
+----------------------------------------------------------------
 Keliling @150cm : _______ cm
 
-TANDAN SAMPEL:
-#1: Posisi [Atas/Tengah/Bawah] | Tinggi: ___cm | Keliling: ___cm
-#2: Posisi [Atas/Tengah/Bawah] | Tinggi: ___cm | Keliling: ___cm
-#3: Posisi [Atas/Tengah/Bawah] | Tinggi: ___cm | Keliling: ___cm
+TANDAN SAMPEL
+----------------------------------------------------------------
+#1: Posisi [ ]Atas [ ]Tengah [ ]Bawah
+    Tinggi: _____ cm   Keliling: _____ cm
 
-Foto ID: _______________________________________
-═══════════════════════════════════════════════════
+#2: Posisi [ ]Atas [ ]Tengah [ ]Bawah
+    Tinggi: _____ cm   Keliling: _____ cm
+
+#3: Posisi [ ]Atas [ ]Tengah [ ]Bawah
+    Tinggi: _____ cm   Keliling: _____ cm
+
+BUNGA (jika ada): [ ] Ya  [ ] Tidak
+Posisi bunga    : _______________________________
+
+CATATAN
+----------------------------------------------------------------
+_____________________________________________________________
+_____________________________________________________________
+
+Foto ID: ___________________________________________________
+================================================================
 ```
 
-### B.6 Output Data Tambahan
+### 1.4.5 Workflow Pengukuran
 
-| Item | Jumlah |
+```
++---------------------------------------------------+
+| 1. Pilih pohon sampel                             |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 2. Ukur keliling batang pada ketinggian 150cm     |
+|    - Tandai titik pengukuran untuk referensi foto |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 3. Identifikasi 3 tandan sampel                   |
+|    - 1 dari pelepah atas (muda)                   |
+|    - 1 dari pelepah tengah (transisi)             |
+|    - 1 dari pelepah bawah (tua)                   |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 4. Ukur dimensi setiap tandan                     |
+|    - Tinggi vertikal                              |
+|    - Keliling horizontal                          |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 5. Foto pohon dari 4 sisi                         |
+|    - Pastikan titik 150cm masuk frame             |
+|    - Ikuti protokol standar (U-T-S-B)             |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 6. Catat semua data di form                       |
+|    - Hubungkan dengan ID foto                     |
++---------------------------------------------------+
+                         |
+                         v
++---------------------------------------------------+
+| 7. Lanjut ke pohon berikutnya                     |
++---------------------------------------------------+
+```
+
+### 1.4.6 Peralatan
+
+| Alat | Fungsi |
 |------|--------|
-| Total pohon sample | 50-100 pohon |
-| Foto per pohon | 4 sisi |
-| Data ukuran per pohon | 1 keliling batang + 3 ukuran tandan |
-| Total dataset | 200-400 foto + 50-100 record pengukuran |
+| Meteran pita (3m+) | Keliling batang dan tandan |
+| Meteran rigid | Tinggi tandan |
+| Form cetak | Pencatatan manual |
+| Smartphone | Foto + backup digital |
+| Power bank | Cadangan daya |
+| Clipboard | Alas tulis di lapangan |
 
 ---
 
-## C. Jadwal Pengambilan Data
+## 1.5 Output Data
 
-| Batch | Waktu | Jenis | Target |
-|-------|-------|-------|--------|
-| Batch 1 | Januari | RGB reguler + data tambahan | 800-1000 pohon |
-| Batch 2 | April | RGB + Depth (eksperimen) | TBD |
+### Data Reguler
+
+| Item | Estimasi |
+|------|----------|
+| Total pohon | 800-1000 |
+| Foto per pohon | 4 |
+| Total foto | 3200-4000 |
+| Setelah QC (estimasi reject 10-15%) | 2800-3600 |
+
+### Data Tambahan
+
+| Item | Estimasi |
+|------|----------|
+| Total pohon sampel | 50-100 |
+| Foto per pohon | 4 |
+| Record pengukuran | 50-100 |
+| Data tandan per pohon | 3 |
 
 ---
 
-## D. Checklist Persiapan Lapangan
+## 1.6 Checklist Persiapan
 
-### Untuk Surveyor Reguler (10 Kelompok)
+### Surveyor Reguler
+
 - [ ] Smartphone dengan baterai penuh
 - [ ] Power bank
-- [ ] Tripod (jika tersedia)
-- [ ] Briefing protokol pengambilan
+- [ ] Tripod (opsional)
+- [ ] Memahami protokol pengambilan
 
-### Untuk Tim Data Tambahan (Zainal)
-- [ ] Form pengukuran cetak
-- [ ] Meteran pita (min 3 meter)
+### Tim Data Tambahan
+
+- [ ] Form pengukuran cetak (100+ lembar)
+- [ ] Meteran pita minimal 3 meter
+- [ ] Meteran rigid
 - [ ] Smartphone dengan baterai penuh
 - [ ] Power bank
-- [ ] Logbook/clipboard
+- [ ] Clipboard
+- [ ] Alat tulis

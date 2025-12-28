@@ -1,158 +1,206 @@
 # 3. REKOMENDASI SPESIFIKASI ALAT
 
+## 3.1 Ikhtisar
+
+Dokumen ini menyediakan rekomendasi spesifikasi hardware untuk pengumpulan data depth dan tablet sebagai viewfinder. Spesifikasi disusun berdasarkan kebutuhan teknis proyek dan ketersediaan di pasar Indonesia.
+
 ---
 
-## A. Kamera Depth
+## 3.2 Kamera Depth
 
-### A.1 Spesifikasi Minimal
+### 3.2.1 Spesifikasi Minimal
 
-| Syarat | Alasan |
-|--------|--------|
-| IMU (Inertial Measurement Unit) | Deteksi orientasi kamera |
-| Outdoor-ready | Pengambilan di perkebunan siang hari |
-| Jangkauan 3-6 meter | Jarak pengambilan dari batang pohon |
-| USB 3.0+ | Bandwidth tinggi untuk transfer data depth |
+| Parameter | Spesifikasi | Alasan |
+|-----------|-------------|--------|
+| IMU | Tersedia | Deteksi orientasi kamera |
+| Jangkauan | 3-6 meter | Jarak pengambilan dari pohon |
+| Koneksi | USB 3.0+ | Bandwidth transfer data depth |
+| Outdoor | Didukung | Penggunaan di perkebunan |
 
-### A.2 Rekomendasi Utama: Intel RealSense D455
+### 3.2.2 Rekomendasi: Intel RealSense D455
 
-| Spesifikasi | Detail |
-|-------------|--------|
+| Parameter | Spesifikasi |
+|-----------|-------------|
 | Part Number | 82635DSD455 |
 | Teknologi | Active Stereo |
-| Jangkauan | 0.6m - 6m (optimal) |
+| Jangkauan optimal | 0.6m - 6m |
+| Jangkauan maksimum | 20m |
 | Akurasi | < 2% error pada 4 meter |
-| Resolusi Depth | 1280 x 720 @ 90 fps |
-| FOV | 86° x 57° |
-| RGB | 1280 x 800 @ 30 fps, Global Shutter |
+| Resolusi depth | 1280 x 720 @ 90 fps |
+| FOV depth | 86 x 57 derajat |
+| Resolusi RGB | 1280 x 800 @ 30 fps |
+| Shutter RGB | Global shutter |
+| Baseline stereo | 95mm |
 | IMU | Bosch BMI055 (6DoF) |
 | Koneksi | USB 3.1 Gen 1 Type-C |
-| Dimensi | 124mm x 26mm x 29mm |
+| Dimensi | 124 x 26 x 29 mm |
+| Harga (Indonesia) | Rp 10.000.000 - 16.000.000 |
 
-**Harga di Indonesia:** Rp 10-16 juta (Tokopedia/Shopee)
+### 3.2.3 Alternatif: Intel RealSense D435i
 
-### A.3 Alternatif: Intel RealSense D435i
-
-| Spesifikasi | Detail |
-|-------------|--------|
+| Parameter | Spesifikasi |
+|-----------|-------------|
 | Part Number | 82635D435I |
-| Jangkauan | 0.3m - 3m (optimal) |
-| RGB | Rolling Shutter |
+| Jangkauan optimal | 0.3m - 3m |
+| Jangkauan maksimum | 10m |
+| Resolusi depth | 1280 x 720 @ 90 fps |
+| Shutter RGB | Rolling shutter |
+| Baseline stereo | 50mm |
 | IMU | Bosch BMI055 (6DoF) |
+| Dimensi | 90 x 25 x 25 mm |
+| Harga (Indonesia) | Rp 7.000.000 - 12.000.000 |
 
-**Harga di Indonesia:** Rp 7-12 juta
+Catatan: Pastikan model memiliki suffix "i" (D435**i**) yang menandakan ketersediaan IMU.
 
-### A.4 Perbandingan
+### 3.2.4 Perbandingan
 
-| Fitur | D455 | D435i |
-|-------|------|-------|
+| Parameter | D455 | D435i |
+|-----------|------|-------|
 | Jangkauan optimal | 6m | 3m |
+| Baseline | 95mm | 50mm |
 | Akurasi jarak jauh | Lebih baik | Kurang |
-| RGB Shutter | Global | Rolling |
-| Harga | Lebih mahal | Lebih murah |
+| RGB shutter | Global | Rolling |
+| Ukuran | Lebih besar | Lebih compact |
+| Harga | Lebih tinggi | Lebih rendah |
 
-**Rekomendasi:** D455 untuk jarak 2-3m dari pohon.
+D455 lebih sesuai untuk jarak pengambilan 2-3 meter dari pohon karena jangkauan optimal yang lebih lebar.
 
 ---
 
-## B. Tablet / Android Device
+## 3.3 Tablet / Perangkat Android
 
-### B.1 Syarat Kompatibilitas RealSense
+### 3.3.1 Spesifikasi Minimal
 
-| Syarat | Alasan |
-|--------|--------|
-| USB 3.0+ (USB 3.2 Gen 1) | Transfer data depth |
-| USB OTG Support | Koneksi kamera external |
-| Qualcomm Snapdragon | Kompatibilitas SDK |
-| Baterai > 7000mAh | Supply daya ke kamera |
+| Parameter | Spesifikasi | Alasan |
+|-----------|-------------|--------|
+| USB | 3.0+ (3.2 Gen 1) | Bandwidth transfer depth |
+| USB OTG | Didukung | Koneksi kamera eksternal |
+| Prosesor | Qualcomm Snapdragon | Kompatibilitas RealSense SDK |
+| Baterai | 7000mAh+ | Supply daya ke kamera |
+| OS | Android 10+ | Dukungan SDK |
 
-### B.2 Tabel Kompatibilitas
+### 3.3.2 Tabel Kompatibilitas USB
 
-| Brand | Model | USB | Kompatibel |
-|-------|-------|-----|------------|
-| Xiaomi | Pad 6 | USB 3.2 | ✓ Ya |
-| Xiaomi | Pad 5 | USB 2.0 | ✗ Tidak |
-| Poco | Poco Pad | USB 2.0 | ✗ Tidak |
-| Redmi | Pad Pro | USB 2.0 | ✗ Tidak |
-| Samsung | Tab S8/S9 | USB 3.2 | ✓ Ya |
-| Samsung | Tab S6 Lite | USB 2.0 | ✗ Tidak |
-| Samsung | Tab S9 FE | USB 2.0 | ✗ Tidak |
-| Lenovo | Tab P12 Pro | USB 3.2 | ✓ Ya |
+| Brand | Model | Versi USB | Kompatibel |
+|-------|-------|-----------|------------|
+| Xiaomi | Pad 6 | USB 3.2 Gen 1 | Ya |
+| Xiaomi | Pad 5 Pro 12.4 | USB 3.2 Gen 1 | Ya |
+| Xiaomi | Pad 5 | USB 2.0 | Tidak |
+| Poco | Poco Pad | USB 2.0 | Tidak |
+| Redmi | Pad Pro | USB 2.0 | Tidak |
+| Samsung | Tab S8 / S8+ / S8 Ultra | USB 3.2 Gen 1 | Ya |
+| Samsung | Tab S9 / S9+ / S9 Ultra | USB 3.2 Gen 1 | Ya |
+| Samsung | Tab S6 Lite (2024) | USB 2.0 | Tidak |
+| Samsung | Tab S9 FE / FE+ | USB 2.0 | Tidak |
+| Samsung | Tab A series | USB 2.0 | Tidak |
+| Lenovo | Tab P12 Pro | USB 3.2 Gen 2 | Ya |
 
-### B.3 Rekomendasi: Xiaomi Pad 6
+Catatan: Port USB Type-C tidak menjamin USB 3.0. Verifikasi spesifikasi sebelum pembelian.
 
-| Spesifikasi | Detail |
-|-------------|--------|
-| Layar | 11" IPS, 2880x1800, 144Hz |
-| Prosesor | Snapdragon 870 |
-| RAM/Storage | 8GB/256GB |
-| USB | USB 3.2 Gen 1 + OTG |
+### 3.3.3 Rekomendasi: Xiaomi Pad 6
+
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Layar | 11 inci IPS LCD, 2880 x 1800, 144Hz |
+| Prosesor | Qualcomm Snapdragon 870 |
+| RAM | 8GB |
+| Storage | 256GB |
+| USB | Type-C 3.2 Gen 1 |
+| USB OTG | Didukung |
+| DisplayPort | Didukung |
 | Baterai | 8840 mAh |
 | OS | Android 13 |
+| Harga (Indonesia) | Rp 4.500.000 - 5.500.000 |
 
-**Harga di Indonesia:** Rp 4.5-5.5 juta
+### 3.3.4 Alternatif: Samsung Galaxy Tab S8
 
-### B.4 Alternatif
-
-| Tablet | USB | Harga |
-|--------|-----|-------|
-| Samsung Tab S8 | USB 3.2 | Rp 7-9 juta |
-| Lenovo Tab P12 Pro | USB 3.2 Gen 2 | Cek ketersediaan |
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Layar | 11 inci LTPS TFT, 2560 x 1600, 120Hz |
+| Prosesor | Qualcomm Snapdragon 8 Gen 1 |
+| RAM | 8GB |
+| Storage | 128GB / 256GB |
+| USB | Type-C 3.2 Gen 1 |
+| Baterai | 8000 mAh |
+| OS | Android 12+ |
+| Harga (Indonesia) | Rp 7.000.000 - 9.000.000 |
 
 ---
 
-## C. Smartphone untuk Data Reguler (Batch 1)
+## 3.4 Smartphone untuk Batch 1 (RGB Only)
 
-### C.1 Spesifikasi Minimal
+### 3.4.1 Spesifikasi Minimal
 
-| Parameter | Nilai |
-|-----------|-------|
-| Kamera | ≥12 MP |
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Kamera | 12 MP minimum |
+| Rasio | Support 4:3 |
 | Orientasi | Portrait |
-| Rasio | 4:3 |
-| Fitur AI/Beauty | Bisa dimatikan |
+| Fitur AI/Beauty | Dapat dinonaktifkan |
 
-### C.2 Kandidat
-
-Smartphone apa saja yang memenuhi kriteria di atas bisa digunakan. Contoh: Samsung A55, Xiaomi Redmi series, dll.
+Smartphone apa pun yang memenuhi kriteria di atas dapat digunakan, termasuk Samsung A55, Xiaomi Redmi series, dan model serupa.
 
 ---
 
-## D. Aksesoris
+## 3.5 Aksesoris
 
-| Item | Spesifikasi | Harga Est. |
-|------|-------------|------------|
-| Kabel USB-C | USB 3.1, 1-2m | Rp 100-300rb |
-| Tripod | Ball head, 100-180cm | Rp 300-800rb |
-| Tablet holder | Clamp mount | Rp 50-150rb |
-| Power bank | 20000mAh+, USB-C PD | Rp 300-600rb |
+| Item | Spesifikasi | Estimasi Harga |
+|------|-------------|----------------|
+| Kabel USB-C to USB-C | USB 3.1, 1-2 meter | Rp 100.000 - 300.000 |
+| Tripod | Ball head, tinggi 100-180cm | Rp 300.000 - 800.000 |
+| Tablet holder | Clamp mount untuk tripod | Rp 50.000 - 150.000 |
+| Camera mount | 1/4 inch screw untuk RealSense | Rp 30.000 - 100.000 |
+| Power bank | 20000mAh+, USB-C PD output | Rp 300.000 - 600.000 |
 
----
-
-## E. Estimasi Budget
-
-### Opsi A: Rekomendasi
-
-| Item | Harga |
-|------|-------|
-| RealSense D455 | Rp 12.000.000 |
-| Xiaomi Pad 6 | Rp 5.000.000 |
-| Kabel + Tripod + Aksesoris | Rp 1.100.000 |
-| **TOTAL** | **Rp 18.100.000** |
-
-### Opsi B: Budget
-
-| Item | Harga |
-|------|-------|
-| RealSense D435i | Rp 9.000.000 |
-| Xiaomi Pad 6 | Rp 5.000.000 |
-| Kabel + Tripod + Aksesoris | Rp 900.000 |
-| **TOTAL** | **Rp 14.900.000** |
+Catatan: Gunakan kabel USB 3.1 yang support bandwidth 10Gbps, bukan kabel charging standar.
 
 ---
 
-## F. Catatan Penting
+## 3.6 Estimasi Budget
 
-1. **Banyak tablet menggunakan USB 2.0** meskipun port-nya Type-C. Selalu verifikasi.
-2. **Xiaomi Pad 6 adalah value terbaik** untuk kompatibilitas RealSense.
-3. **Hindari iPad** - RealSense SDK tidak support iOS.
-4. **Pastikan beli kabel USB 3.1** bukan kabel charging biasa.
+### Opsi A: Konfigurasi Utama
+
+| Item | Estimasi Harga |
+|------|----------------|
+| Intel RealSense D455 | Rp 12.000.000 |
+| Xiaomi Pad 6 (8/256GB) | Rp 5.000.000 |
+| Kabel USB-C 3.1 | Rp 200.000 |
+| Tripod + mount | Rp 500.000 |
+| Power bank | Rp 400.000 |
+| **Total** | **Rp 18.100.000** |
+
+### Opsi B: Konfigurasi Budget
+
+| Item | Estimasi Harga |
+|------|----------------|
+| Intel RealSense D435i | Rp 9.000.000 |
+| Xiaomi Pad 6 (8/256GB) | Rp 5.000.000 |
+| Kabel USB-C 3.1 | Rp 200.000 |
+| Tripod + mount | Rp 400.000 |
+| Power bank | Rp 300.000 |
+| **Total** | **Rp 14.900.000** |
+
+---
+
+## 3.7 Catatan Teknis
+
+1. Tablet dengan port USB Type-C tidak selalu menggunakan USB 3.0. Verifikasi spesifikasi perangkat sebelum pembelian.
+
+2. RealSense D455 dan D435i memerlukan USB 3.0 untuk operasi penuh. USB 2.0 tidak menyediakan bandwidth yang cukup.
+
+3. iPad tidak didukung oleh RealSense SDK.
+
+4. Harga kamera depth di Indonesia lebih tinggi dari harga retail internasional karena biaya impor.
+
+5. Untuk pengujian kompatibilitas, gunakan aplikasi RealSense Viewer setelah perangkat diterima.
+
+---
+
+## 3.8 Sumber Pembelian
+
+| Item | Platform |
+|------|----------|
+| Intel RealSense | Tokopedia, Shopee (cari: "RealSense D455" atau "RealSense D435i") |
+| Xiaomi Pad 6 | Mi Store, Tokopedia, Shopee, Lazada, Blibli |
+| Samsung Tab S8 | Samsung Store, Tokopedia, Shopee |
+| Aksesoris | Tokopedia, Shopee |
