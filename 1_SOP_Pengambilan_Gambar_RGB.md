@@ -43,7 +43,7 @@
 | **Rasio** | 4:3 (Native Sensor) | Jangan 16:9 (memotong atas-bawah) |
 | **Fitur AI/Beauty** | OFF | Harus dimatikan agar warna buah tidak dimanipulasi |
 | **Flash** | OFF | - |
-| **Resolusi** | Highest Available | Untuk keperluan zoom saat pelabelan manual |
+| **Resolusi** | 12 MP (Fix) | - |
 
 ---
 
