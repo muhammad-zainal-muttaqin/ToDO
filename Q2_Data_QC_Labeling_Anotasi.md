@@ -191,7 +191,7 @@ results = model.train(
 | Total pakar | 4 orang (dari GMK) |
 | Opsi kerja | 2 pakar sekaligus (diskusi) atau bergantian |
 | Alokasi waktu | 3-5 hari x 7 jam/hari |
-| Lokasi | Kantor GMK atau meeting space |
+| Lokasi | Kantor GMK atau sewa meeting space (??) |
 
 ### 2.4.2 Pembagian Peran
 

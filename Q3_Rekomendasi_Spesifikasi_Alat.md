@@ -201,6 +201,11 @@ Untuk pengambilan gambar pohon tinggi di mana posisi eye-level tidak dapat menja
 | DIY | Rakit dari tongkat pancing teleskopik + mount | Rp 300.000 - 1.000.000 |
 | Painting Pole | Extension pole untuk cat + adapter | Rp 200.000 - 500.000 |
 
+**Referensi Commercial Pole:**
+- [Telescopic Inspection Camera Pole (Tip Top Composites)](https://www.tiptopcomposites.com/product/telescopic-inspection-camera-pole/)
+
+Catatan: Untuk opsi lebih murah, dapat merakit sendiri dari komponen lokal.
+
 ### 3.6.4 Pertimbangan DIY
 
 ```
