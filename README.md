@@ -8,14 +8,13 @@ Dokumen ini menyediakan panduan teknis untuk proyek deteksi dan klasifikasi tand
 
 ## Daftar Dokumen
 
-| No | Dokumen | Deskripsi | Status |
-|----|---------|-----------|--------|
-| 1 | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Protokol pengumpulan data reguler, tambahan, dan eksperimen | Revisi |
-| 2 | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Prosedur QC, auto-labeling, dan spesifikasi anotasi | Revisi |
-| 3 | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Spesifikasi hardware (kamera depth, tablet, GPS, tongkat) | Revisi |
-| 4 | [Q4_Permasalahan_Black_Bunch.md](Q4_Permasalahan_Black_Bunch.md) | Analisis diferensiasi tandan hitam | Draft |
-| 5 | [Q5_Permasalahan_Counting.md](Q5_Permasalahan_Counting.md) | Teknik penghitungan tandan multi-view | Draft |
-| - | [review.md](review.md) | Catatan feedback dari dosen | - |
+| No | Dokumen | Deskripsi |
+|----|---------|----------|
+| 1 | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Protokol pengumpulan data reguler, tambahan, dan eksperimen |
+| 2 | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Prosedur QC, auto-labeling, dan spesifikasi anotasi |
+| 3 | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Spesifikasi hardware (kamera depth, tablet, GPS, tongkat) |
+| 4 | [Q4_Permasalahan_Black_Bunch.md](Q4_Permasalahan_Black_Bunch.md) | Analisis diferensiasi tandan hitam |
+| 5 | [Q5_Permasalahan_Counting.md](Q5_Permasalahan_Counting.md) | Teknik penghitungan tandan multi-view |
 
 ---
 
@@ -111,8 +110,6 @@ Spesifikasi dan protokol pengumpulan data:
 
 **Rekomendasi:** Ekstraksi fitur tambahan (ukuran relatif, posisi vertikal, tekstur)
 
-**Status:** Diskusi lanjutan setelah data collecting dan labeling selesai
-
 ---
 
 ### Q5: Permasalahan Counting
@@ -129,51 +126,6 @@ Spesifikasi dan protokol pengumpulan data:
 5. 3D Reconstruction
 6. Depth-assisted NMS (rekomendasi)
 7. Multi-View Stereo
-
-**Status:** Diskusi lanjutan setelah data collecting dan labeling selesai. Perlu protokol baseline yang lebih menyeluruh.
-
----
-
-## Catatan Feedback (review.md)
-
-### Q1
-- Waktu pengambilan tidak dibatasi, sesuaikan jam kerja survei 08:00-16:00
-- Penentuan arah Utara dapat menggunakan referensi relatif
-- Video 360 perlu ditambahkan sebagai metode eksperimen
-- Sampling pengukuran: 3 tandan x 10 pohon + 50 pohon keliling batang
-
-### Q2
-- Data kurang ideal tetap dipisahkan dan dilabeli untuk training tambahan
-- Gunakan pretrained model dari Roboflow untuk prelabel deteksi
-- Pakar label kelas (bukan kotak) untuk 100 pohon seed
-- Dokumentasi ketidakyakinan pakar saat validasi
-- Tim: 4 pakar GMK, 2 tim paralel, 3-5 hari x 7 jam
-
-### Q3
-- Tambahkan GPS
-- Tambahkan opsi smartphone (non-tablet)
-- Tongkat teleskopik 3-5 meter (ringan dan kuat)
-- Budget: Rp 21 juta per set
-
-### Q4 & Q5
-- Diskusi lanjutan setelah data collecting dan labeling selesai
-- Perlu protokol baseline yang lebih menyeluruh
-
----
-
-## Struktur Folder
-
-```
-ToDO/
-    README.md                           <- Dokumen ini
-    review.md                           <- Catatan feedback
-    Q1_Persiapan_Data_Collection.md
-    Q2_Data_QC_Labeling_Anotasi.md
-    Q3_Rekomendasi_Spesifikasi_Alat.md
-    Q4_Permasalahan_Black_Bunch.md
-    Q5_Permasalahan_Counting.md
-    legacy/                             <- Arsip dokumen versi sebelumnya
-```
 
 ---
 
@@ -194,18 +146,3 @@ ToDO/
 | Intel RealSense | Tokopedia, Shopee |
 | Xiaomi Pad | Mi Store, Tokopedia, Shopee |
 | Samsung Tab | Samsung Store, Tokopedia, Shopee |
-
----
-
-## Changelog
-
-| Tanggal | Perubahan |
-|---------|-----------|
-| 2024-12-29 | Restrukturisasi dokumen menjadi 5 topik utama |
-| 2024-12-30 | Revisi berdasarkan feedback dosen |
-| 2024-12-30 | Menambahkan data eksperimen video 360 |
-| 2024-12-30 | Menyesuaikan sampling pengukuran |
-| 2024-12-30 | Menambahkan workflow pretrained + classifier |
-| 2024-12-30 | Menambahkan fitur ketidakyakinan pakar |
-| 2024-12-30 | Menambahkan GPS, smartphone, tongkat |
-| 2024-12-30 | Update budget ke Rp 21 juta |
