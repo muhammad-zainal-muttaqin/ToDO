@@ -2,7 +2,9 @@
 
 ## 3.1 Ikhtisar
 
-Dokumen ini menyediakan rekomendasi spesifikasi hardware untuk pengumpulan data depth dan tablet sebagai viewfinder. Spesifikasi disusun berdasarkan kebutuhan teknis proyek dan ketersediaan di pasar Indonesia.
+Dokumen ini menyediakan rekomendasi spesifikasi hardware untuk pengumpulan data depth, tablet sebagai viewfinder, smartphone alternatif, GPS, dan tongkat teleskopik. Spesifikasi disusun berdasarkan kebutuhan teknis proyek dan ketersediaan di pasar Indonesia.
+
+**Estimasi Budget Total:** Rp 21.000.000 per set (termasuk powerbank dan aksesoris)
 
 ---
 
@@ -127,22 +129,118 @@ Catatan: Port USB Type-C tidak menjamin USB 3.0. Verifikasi spesifikasi sebelum 
 
 ---
 
-## 3.4 Smartphone untuk Batch 1 (RGB Only)
+## 3.4 Smartphone (Opsi Non-Tablet)
+
+Untuk penggunaan tanpa tablet, smartphone dengan spesifikasi berikut dapat digunakan:
 
 ### 3.4.1 Spesifikasi Minimal
 
 | Parameter | Spesifikasi |
 |-----------|-------------|
 | Kamera | 12 MP minimum |
-| Rasio | Support 4:3 |
-| Orientasi | Portrait |
-| Fitur AI/Beauty | Dapat dinonaktifkan |
+| USB | Type-C 3.0+ (untuk RealSense) |
+| USB OTG | Didukung |
+| Baterai | 5000mAh+ |
+| Prosesor | Qualcomm Snapdragon (rekomendasi) |
 
-Smartphone apa pun yang memenuhi kriteria di atas dapat digunakan, termasuk Samsung A55, Xiaomi Redmi series, dan model serupa.
+### 3.4.2 Rekomendasi Smartphone
+
+| Model | USB | Baterai | Harga |
+|-------|-----|---------|-------|
+| Samsung Galaxy S23 | USB 3.2 | 3900mAh | Rp 10-12 juta |
+| Google Pixel 7 | USB 3.2 | 4355mAh | Rp 8-10 juta |
+| Samsung Galaxy A54 | USB 2.0 | 5000mAh | Rp 5-6 juta |
+
+Catatan: Samsung A54/A55 menggunakan USB 2.0, sehingga tidak kompatibel dengan RealSense. Untuk foto RGB biasa tanpa depth, smartphone apa pun dengan kamera 12MP+ dapat digunakan.
 
 ---
 
-## 3.5 Aksesoris
+## 3.5 GPS
+
+### 3.5.1 Kegunaan
+
+| Fungsi | Deskripsi |
+|--------|-----------|
+| Geotagging | Mencatat lokasi setiap pohon |
+| Mapping | Pemetaan kebun |
+| Navigasi | Pencarian pohon yang sudah disurvei |
+
+### 3.5.2 Opsi GPS
+
+| Opsi | Deskripsi | Akurasi | Harga |
+|------|-----------|---------|-------|
+| GPS Smartphone | Fitur bawaan smartphone | 3-5 meter | Gratis |
+| GPS External (Bluetooth) | Garmin GLO 2, Bad Elf | 2-3 meter | Rp 2-4 juta |
+| GPS Handheld | Garmin GPSMAP 66 | 1-3 meter | Rp 5-8 juta |
+
+Untuk kebutuhan proyek ini, GPS bawaan smartphone umumnya sudah memadai.
+
+---
+
+## 3.6 Tongkat Teleskopik (Pole)
+
+### 3.6.1 Kegunaan
+
+Untuk pengambilan gambar pohon tinggi di mana posisi eye-level tidak dapat menjangkau tajuk dan tandan.
+
+### 3.6.2 Spesifikasi
+
+| Parameter | Spesifikasi |
+|-----------|-------------|
+| Panjang | 3-5 meter (teleskopik) |
+| Material | Carbon fiber atau aluminum |
+| Berat | Ringan (< 1 kg) |
+| Mount | Universal 1/4" atau custom |
+| Fitur | Kunci setiap segmen |
+
+### 3.6.3 Opsi Tongkat
+
+| Opsi | Deskripsi | Estimasi Harga |
+|------|-----------|----------------|
+| Commercial | Telescopic Inspection Camera Pole | $200-500 USD |
+| DIY | Rakit dari tongkat pancing teleskopik + mount | Rp 300.000 - 1.000.000 |
+| Painting Pole | Extension pole untuk cat + adapter | Rp 200.000 - 500.000 |
+
+### 3.6.4 Pertimbangan DIY
+
+```
+STRUKTUR TONGKAT DIY
+
+    [SMARTPHONE/TABLET]
+           |
+    +------+------+
+    |  MOUNT/     |
+    |  HOLDER     |
+    +------+------+
+           |
+    +------+------+
+    | SEGMEN 1    |  <- carbon fiber / aluminum
+    | (paling atas)|
+    +------+------+
+           |
+    +------+------+
+    | SEGMEN 2    |
+    |             |
+    +------+------+
+           |
+    +------+------+
+    | SEGMEN 3    |
+    | (paling     |
+    |  bawah)     |
+    +------+------+
+           |
+    [GRIP/HANDLE]
+
+Komponen yang dibutuhkan:
+1. Tongkat teleskopik (fishing rod / painting pole)
+2. Mount smartphone/tablet (universal clamp)
+3. Adapter 1/4" (jika diperlukan)
+4. Perekat/baut penguat
+```
+
+---
+
+## 3.7 Aksesoris
 
 | Item | Spesifikasi | Estimasi Harga |
 |------|-------------|----------------|
@@ -151,14 +249,17 @@ Smartphone apa pun yang memenuhi kriteria di atas dapat digunakan, termasuk Sams
 | Tablet holder | Clamp mount untuk tripod | Rp 50.000 - 150.000 |
 | Camera mount | 1/4 inch screw untuk RealSense | Rp 30.000 - 100.000 |
 | Power bank | 20000mAh+, USB-C PD output | Rp 300.000 - 600.000 |
+| Carrying case | Untuk RealSense + tablet | Rp 100.000 - 300.000 |
 
 Catatan: Gunakan kabel USB 3.1 yang support bandwidth 10Gbps, bukan kabel charging standar.
 
 ---
 
-## 3.6 Estimasi Budget
+## 3.8 Estimasi Budget
 
-### Opsi A: Konfigurasi Utama
+**Target budget per set:** Rp 21.000.000
+
+### Opsi A: Konfigurasi Utama (dengan Tablet)
 
 | Item | Estimasi Harga |
 |------|----------------|
@@ -166,8 +267,10 @@ Catatan: Gunakan kabel USB 3.1 yang support bandwidth 10Gbps, bukan kabel chargi
 | Xiaomi Pad 6 (8/256GB) | Rp 5.000.000 |
 | Kabel USB-C 3.1 | Rp 200.000 |
 | Tripod + mount | Rp 500.000 |
-| Power bank | Rp 400.000 |
-| **Total** | **Rp 18.100.000** |
+| Power bank (20000mAh) | Rp 500.000 |
+| Tongkat DIY | Rp 500.000 |
+| Carrying case | Rp 200.000 |
+| **Total** | **Rp 18.900.000** |
 
 ### Opsi B: Konfigurasi Budget
 
@@ -177,12 +280,27 @@ Catatan: Gunakan kabel USB 3.1 yang support bandwidth 10Gbps, bukan kabel chargi
 | Xiaomi Pad 6 (8/256GB) | Rp 5.000.000 |
 | Kabel USB-C 3.1 | Rp 200.000 |
 | Tripod + mount | Rp 400.000 |
-| Power bank | Rp 300.000 |
-| **Total** | **Rp 14.900.000** |
+| Power bank (20000mAh) | Rp 400.000 |
+| Tongkat DIY | Rp 400.000 |
+| Carrying case | Rp 150.000 |
+| **Total** | **Rp 15.550.000** |
+
+### Opsi C: Konfigurasi Premium
+
+| Item | Estimasi Harga |
+|------|----------------|
+| Intel RealSense D455 | Rp 12.000.000 |
+| Samsung Tab S8 | Rp 8.000.000 |
+| Kabel USB-C 3.1 | Rp 300.000 |
+| Tripod + mount | Rp 700.000 |
+| Power bank (30000mAh) | Rp 700.000 |
+| Commercial Pole | Rp 1.500.000 |
+| Carrying case | Rp 300.000 |
+| **Total** | **Rp 23.500.000** |
 
 ---
 
-## 3.7 Catatan Teknis
+## 3.9 Catatan Teknis
 
 1. Tablet dengan port USB Type-C tidak selalu menggunakan USB 3.0. Verifikasi spesifikasi perangkat sebelum pembelian.
 
@@ -194,13 +312,17 @@ Catatan: Gunakan kabel USB 3.1 yang support bandwidth 10Gbps, bukan kabel chargi
 
 5. Untuk pengujian kompatibilitas, gunakan aplikasi RealSense Viewer setelah perangkat diterima.
 
+6. Budget Rp 21 juta sudah mencakup toleransi untuk variasi harga dan aksesoris tambahan.
+
 ---
 
-## 3.8 Sumber Pembelian
+## 3.10 Sumber Pembelian
 
 | Item | Platform |
 |------|----------|
 | Intel RealSense | Tokopedia, Shopee (cari: "RealSense D455" atau "RealSense D435i") |
 | Xiaomi Pad 6 | Mi Store, Tokopedia, Shopee, Lazada, Blibli |
 | Samsung Tab S8 | Samsung Store, Tokopedia, Shopee |
+| GPS External | Tokopedia, Shopee (cari: "GPS Bluetooth" atau "Garmin GLO") |
+| Tongkat teleskopik | Tokopedia, Shopee (cari: "telescopic pole" atau "tongkat pancing carbon") |
 | Aksesoris | Tokopedia, Shopee |

@@ -10,11 +10,12 @@ Dokumen ini menyediakan panduan teknis untuk proyek deteksi dan klasifikasi tand
 
 | No | Dokumen | Deskripsi | Status |
 |----|---------|-----------|--------|
-| 1 | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Protokol pengumpulan data reguler dan tambahan | Draft |
-| 2 | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Prosedur QC, auto-labeling, dan spesifikasi anotasi | Draft |
-| 3 | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Spesifikasi hardware (kamera depth, tablet) | Draft |
+| 1 | [Q1_Persiapan_Data_Collection.md](Q1_Persiapan_Data_Collection.md) | Protokol pengumpulan data reguler, tambahan, dan eksperimen | Revisi |
+| 2 | [Q2_Data_QC_Labeling_Anotasi.md](Q2_Data_QC_Labeling_Anotasi.md) | Prosedur QC, auto-labeling, dan spesifikasi anotasi | Revisi |
+| 3 | [Q3_Rekomendasi_Spesifikasi_Alat.md](Q3_Rekomendasi_Spesifikasi_Alat.md) | Spesifikasi hardware (kamera depth, tablet, GPS, tongkat) | Revisi |
 | 4 | [Q4_Permasalahan_Black_Bunch.md](Q4_Permasalahan_Black_Bunch.md) | Analisis diferensiasi tandan hitam | Draft |
 | 5 | [Q5_Permasalahan_Counting.md](Q5_Permasalahan_Counting.md) | Teknik penghitungan tandan multi-view | Draft |
+| - | [review.md](review.md) | Catatan feedback dari dosen | - |
 
 ---
 
@@ -29,11 +30,18 @@ Spesifikasi dan protokol pengumpulan data:
 - Foto 4 sisi per pohon (U-T-S-B, clockwise)
 - Spesifikasi: 12MP, 4:3, Portrait
 - Jarak: 2-3 meter, tinggi kamera: 150cm
+- Waktu: sesuai jam kerja survei (08:00-16:00)
 
-**Data Tambahan (50-100 Pohon)**
+**Data Tambahan (Pengukuran Fisik)**
 - PIC: Tim 11 (Zainal)
-- Pengukuran fisik: keliling batang @150cm, dimensi tandan
-- Tujuan: kalibrasi ukuran, validasi hipotesis posisi
+- 50 pohon: pengukuran keliling batang @150cm
+- 10 pohon: pengukuran 3 tandan per pohon
+
+**Data Eksperimen (50 Pohon)**
+- 3 metode dibandingkan:
+  - Metode A: 4 sisi (standar)
+  - Metode B: 8 sisi (detail)
+  - Metode C: Video 360 derajat
 
 ---
 
@@ -41,20 +49,29 @@ Spesifikasi dan protokol pengumpulan data:
 
 **Quality Control**
 - Kriteria reject: blur, backlight, komposisi salah
-- Estimasi rejection rate: 10-15%
+- Data reject dipisahkan tetapi tetap dilabeli untuk training tambahan
 
-**Auto-Labeling**
-- Tool: AnyLabeling (offline, open source)
-- Workflow: seed data (50-100) -> train YOLOv8-Nano -> auto-label -> validasi pakar
+**Auto-Labeling (Alternatif dengan Pretrained)**
+1. Prelabel deteksi dengan model pretrained dari Roboflow (box only)
+2. Pakar label kelas untuk 100 pohon (400 images)
+3. Train classifier
+4. Auto-label kelas untuk sisa dataset
+5. Validasi oleh pakar dengan dokumentasi ketidakyakinan
 
-**Spesifikasi Anotasi**
-- Kelas utama: M1, M2, M3, M4 (estimasi waktu panen)
-- Kelas tambahan: Bunga, Batang
-- Format: YOLO (.txt)
+**Tim Labeling**
+- 4 pakar dari GMK
+- 2 tim paralel (1 asisten + 2 pakar per tim)
+- Alokasi: 3-5 hari x 7 jam/hari
+
+**Fitur Ketidakyakinan**
+- Jika pakar kurang yakin, ketidakyakinan didokumentasikan
+- Informasi ini dapat digunakan untuk training/analisis
 
 ---
 
 ### Q3: Rekomendasi Spesifikasi Alat
+
+**Budget per Set:** Rp 21.000.000
 
 **Kamera Depth**
 - Utama: Intel RealSense D455 (Rp 10-16 juta)
@@ -63,11 +80,19 @@ Spesifikasi dan protokol pengumpulan data:
 **Tablet**
 - Syarat: USB 3.0+, Qualcomm Snapdragon, baterai 7000mAh+
 - Rekomendasi: Xiaomi Pad 6 (Rp 4.5-5.5 juta)
-- Alternatif: Samsung Tab S8 (Rp 7-9 juta)
 
-**Estimasi Budget**
-- Konfigurasi utama: Rp 18.1 juta
-- Konfigurasi budget: Rp 14.9 juta
+**Smartphone (Opsi Non-Tablet)**
+- Harus USB 3.0+ untuk kompatibilitas RealSense
+- Samsung A54/A55 menggunakan USB 2.0 (tidak kompatibel depth)
+
+**GPS**
+- GPS bawaan smartphone umumnya memadai
+- Opsi external untuk akurasi lebih tinggi
+
+**Tongkat Teleskopik (Pole)**
+- Panjang: 3-5 meter
+- Material: Carbon fiber atau aluminum (ringan dan kuat)
+- Opsi: Commercial atau DIY
 
 ---
 
@@ -84,7 +109,9 @@ Spesifikasi dan protokol pengumpulan data:
 | Tekstur | Sedang |
 | Warna | Rendah |
 
-**Rekomendasi:** Ekstraksi fitur tambahan (ukuran relatif, posisi vertikal, tekstur) untuk meningkatkan akurasi klasifikasi
+**Rekomendasi:** Ekstraksi fitur tambahan (ukuran relatif, posisi vertikal, tekstur)
+
+**Status:** Diskusi lanjutan setelah data collecting dan labeling selesai
 
 ---
 
@@ -95,13 +122,42 @@ Spesifikasi dan protokol pengumpulan data:
 **Teknik tanpa depth:**
 1. Simple Aggregation (baseline)
 2. Multi-View NMS (rekomendasi)
-3. Video Tracking (untuk data video)
+3. Video Tracking (untuk data video 360)
 4. Density Estimation
 
 **Teknik dengan depth:**
 5. 3D Reconstruction
 6. Depth-assisted NMS (rekomendasi)
 7. Multi-View Stereo
+
+**Status:** Diskusi lanjutan setelah data collecting dan labeling selesai. Perlu protokol baseline yang lebih menyeluruh.
+
+---
+
+## Catatan Feedback (review.md)
+
+### Q1
+- Waktu pengambilan tidak dibatasi, sesuaikan jam kerja survei 08:00-16:00
+- Penentuan arah Utara dapat menggunakan referensi relatif
+- Video 360 perlu ditambahkan sebagai metode eksperimen
+- Sampling pengukuran: 3 tandan x 10 pohon + 50 pohon keliling batang
+
+### Q2
+- Data kurang ideal tetap dipisahkan dan dilabeli untuk training tambahan
+- Gunakan pretrained model dari Roboflow untuk prelabel deteksi
+- Pakar label kelas (bukan kotak) untuk 100 pohon seed
+- Dokumentasi ketidakyakinan pakar saat validasi
+- Tim: 4 pakar GMK, 2 tim paralel, 3-5 hari x 7 jam
+
+### Q3
+- Tambahkan GPS
+- Tambahkan opsi smartphone (non-tablet)
+- Tongkat teleskopik 3-5 meter (ringan dan kuat)
+- Budget: Rp 21 juta per set
+
+### Q4 & Q5
+- Diskusi lanjutan setelah data collecting dan labeling selesai
+- Perlu protokol baseline yang lebih menyeluruh
 
 ---
 
@@ -110,6 +166,7 @@ Spesifikasi dan protokol pengumpulan data:
 ```
 ToDO/
     README.md                           <- Dokumen ini
+    review.md                           <- Catatan feedback
     Q1_Persiapan_Data_Collection.md
     Q2_Data_QC_Labeling_Anotasi.md
     Q3_Rekomendasi_Spesifikasi_Alat.md
@@ -128,7 +185,7 @@ ToDO/
 |------|--------|-----|
 | AnyLabeling | Labeling + auto-label | github.com/vietanhdev/anylabeling |
 | Ultralytics | YOLOv8 training | github.com/ultralytics/ultralytics |
-| Roboflow | Dataset management | roboflow.com |
+| Roboflow | Dataset management + pretrained models | roboflow.com |
 
 ### Hardware
 
@@ -144,6 +201,11 @@ ToDO/
 
 | Tanggal | Perubahan |
 |---------|-----------|
-| 2024-12 | Restrukturisasi dokumen menjadi 5 topik utama |
-| 2024-12 | Penambahan visualisasi ASCII dan diagram |
-| 2024-12 | Revisi format menjadi lebih profesional |
+| 2024-12-29 | Restrukturisasi dokumen menjadi 5 topik utama |
+| 2024-12-30 | Revisi berdasarkan feedback dosen |
+| 2024-12-30 | Menambahkan data eksperimen video 360 |
+| 2024-12-30 | Menyesuaikan sampling pengukuran |
+| 2024-12-30 | Menambahkan workflow pretrained + classifier |
+| 2024-12-30 | Menambahkan fitur ketidakyakinan pakar |
+| 2024-12-30 | Menambahkan GPS, smartphone, tongkat |
+| 2024-12-30 | Update budget ke Rp 21 juta |

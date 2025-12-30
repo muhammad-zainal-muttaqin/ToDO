@@ -38,24 +38,33 @@ INPUT
                     |
                     v
 +------------------------------------------+
-| SORTIR MANUAL                            |
+| SORTIR                                   |
 | - Cek kriteria penolakan                 |
-| - Tandai foto yang tidak memenuhi standar|
+| - Klasifikasi: PASS / REJECT             |
 +------------------------------------------+
                     |
-                    v
-+------------------------------------------+
-| KLASIFIKASI                              |
-|  [PASS] -> Masuk dataset                 |
-|  [REJECT] -> Dokumentasi alasan          |
-+------------------------------------------+
+          +---------+---------+
+          |                   |
+          v                   v
++------------------+   +------------------+
+| PASS             |   | REJECT           |
+| -> Dataset utama |   | -> Dipisahkan    |
+|                  |   | -> Tetap dilabeli|
+|                  |   | -> Untuk training|
+|                  |   |    tambahan      |
++------------------+   +------------------+
+          |                   |
+          +---------+---------+
                     |
                     v
 OUTPUT
 +------------------------------------------+
-| ~3400-3600 foto yang memenuhi standar    |
+| Dataset utama: ~3400-3600 foto           |
+| Dataset tambahan: ~400-600 foto (reject) |
 +------------------------------------------+
 ```
+
+**Catatan:** Data yang kurang ideal (reject) tetap dipisahkan dan dilabeli untuk dapat digunakan sebagai data training/pengujian tambahan.
 
 ---
 
@@ -92,100 +101,104 @@ Auto-labeling bertujuan untuk menghasilkan anotasi awal (pre-label) yang akan di
 | Website | roboflow.com |
 | Lisensi | Freemium |
 | Platform | Web-based |
-| Fitur | Auto-label, augmentasi, kolaborasi |
+| Fitur | Auto-label, augmentasi, kolaborasi, pretrained models |
 
-### 2.3.4 Workflow Auto-Labeling
+### 2.3.4 Workflow Auto-Labeling (Alternatif dengan Pretrained Model)
+
+Karena seed data awal (200 gambar) mungkin terlalu sedikit untuk training detector yang akurat, berikut workflow alternatif menggunakan pretrained model:
 
 ```
-FASE 1: SEED DATA
-+--------------------------------------------------+
-| Zainal melabel manual 50-100 gambar              |
-| - Menggunakan AnyLabeling mode manual            |
-| - Label: M1, M2, M3, M4, Bunga, Batang           |
-+--------------------------------------------------+
+FASE 1: PRELABEL DETEKSI TANDAN (Bounding Box Only)
++----------------------------------------------------------+
+| Gunakan model pretrained deteksi tandan sawit dari       |
+| Roboflow (cari model dengan mAP tinggi)                  |
+| - Ignore/buang kelas dari model pretrained               |
+| - Ambil hanya output bounding box                        |
+| - Hasil: semua tandan terdeteksi tanpa kelas             |
++----------------------------------------------------------+
                          |
                          v
-FASE 2: TRAINING MODEL AWAL
-+--------------------------------------------------+
-| Train YOLOv8-Nano dengan seed data               |
-| - Dataset: 50-100 gambar berlabel                |
-| - Output: model weights (.pt)                    |
-+--------------------------------------------------+
+FASE 2: LABEL KELAS (SEED) - 100 Pohon / 400 Images
++----------------------------------------------------------+
+| Pakar memberikan label KELAS pada 100 pohon              |
+| - Tidak perlu menggambar kotak baru                      |
+| - Hanya assign kelas: M1/M2/M3/M4/Bunga                  |
+| - Koreksi bounding box jika posisi salah                 |
++----------------------------------------------------------+
                          |
                          v
-FASE 3: EXPORT MODEL
-+--------------------------------------------------+
-| Export model ke format ONNX                      |
-| - Untuk kompatibilitas dengan AnyLabeling        |
-+--------------------------------------------------+
+FASE 3: TRAIN CLASSIFIER
++----------------------------------------------------------+
+| Train model klasifikasi dari 100 pohon (400 images)      |
+| - Input: crop tandan dari bounding box                   |
+| - Output: classifier M1/M2/M3/M4/Bunga                   |
++----------------------------------------------------------+
                          |
                          v
-FASE 4: AUTO-LABEL
-+--------------------------------------------------+
-| Load model ke AnyLabeling                        |
-| Jalankan inferensi pada sisa dataset             |
-| - Input: ~3400 gambar                            |
-| - Output: anotasi otomatis                       |
-+--------------------------------------------------+
+FASE 4: AUTO-LABEL KELAS (Pohon 101 dst)
++----------------------------------------------------------+
+| Untuk pohon 101 dst:                                     |
+| - Deteksi bounding box dengan pretrained model           |
+| - Assign kelas dengan trained classifier                 |
+| - Hasil: prelabel lengkap (box + kelas)                  |
++----------------------------------------------------------+
                          |
                          v
-FASE 5: VALIDASI PAKAR
-+--------------------------------------------------+
-| Pakar mereview hasil auto-label                  |
-| - Koreksi bounding box jika salah posisi         |
-| - Koreksi kelas jika salah klasifikasi           |
-| - Tambah deteksi yang terlewat                   |
-+--------------------------------------------------+
+FASE 5: VALIDASI/PENGECEKAN KELAS OLEH PAKAR
++----------------------------------------------------------+
+| Pakar mereview hasil auto-label kelas                    |
+| - Koreksi kelas jika salah                               |
+| - Koreksi bounding box jika perlu                        |
+| - Tandai ketidakyakinan (lihat 2.4.5)                    |
++----------------------------------------------------------+
                          |
                          v
 FASE 6: EXPORT DATASET FINAL
-+--------------------------------------------------+
-| Export dalam format YOLO                         |
-| - Split: train (80%) / val (20%)                 |
-+--------------------------------------------------+
++----------------------------------------------------------+
+| Export dalam format YOLO                                 |
+| - Split: train (80%) / val (20%)                         |
++----------------------------------------------------------+
 ```
 
-### 2.3.5 Script Training YOLOv8
+### 2.3.5 Script Training YOLOv8 (Untuk Classifier)
 
 ```python
 from ultralytics import YOLO
 
 # Load pretrained model
-model = YOLO('yolov8n.pt')
+model = YOLO('yolov8n-cls.pt')  # classifier
 
 # Training configuration
 results = model.train(
-    data='dataset.yaml',
+    data='dataset_crops/',  # folder dengan crop tandan
     epochs=50,
-    imgsz=640,
-    batch=16,
-    name='sawit_prelabel_v1'
+    imgsz=224,
+    batch=32,
+    name='sawit_classifier_v1'
 )
-
-# Export untuk AnyLabeling
-model.export(format='onnx')
 ```
 
 ---
 
 ## 2.4 Teknis Labeling dengan Pakar
 
-### 2.4.1 Konfigurasi Sesi
+### 2.4.1 Konfigurasi Tim
 
 | Parameter | Spesifikasi |
 |-----------|-------------|
-| Lokasi | Ruangan dengan komputer |
-| Durasi sesi | 2-3 jam per sesi |
-| Peserta | 1 pakar + 1 operator (Zainal) |
-| Software | AnyLabeling dengan model pre-trained |
-| Input | Dataset dengan pre-label |
+| Tim | 2 tim paralel |
+| Per tim | 1 asisten + 2 pakar |
+| Total pakar | 4 orang (dari GMK) |
+| Opsi kerja | 2 pakar sekaligus (diskusi) atau bergantian |
+| Alokasi waktu | 3-5 hari x 7 jam/hari |
+| Lokasi | Kantor GMK atau meeting space |
 
 ### 2.4.2 Pembagian Peran
 
 | Peran | Tugas |
 |-------|-------|
 | Pakar | Validasi label, koreksi kelas, koreksi posisi |
-| Operator | Navigasi gambar, operasi teknis, dokumentasi |
+| Asisten | Navigasi gambar, operasi teknis, dokumentasi |
 
 ### 2.4.3 Alur Validasi per Gambar
 
@@ -219,7 +232,13 @@ model.export(format='onnx')
               |
               v
 +--------------------------------+
-| 5. Simpan dan lanjut           |
+| 5. Tandai ketidakyakinan       |
+|    (jika pakar tidak yakin)    |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 6. Simpan dan lanjut           |
 +--------------------------------+
 ```
 
@@ -234,7 +253,31 @@ model.export(format='onnx')
 | Ctrl+S | Simpan |
 | Ctrl+Z | Undo |
 
-### 2.4.5 Target Kecepatan
+### 2.4.5 Fitur Ketidakyakinan Pakar
+
+Saat validasi kelas, jika pakar kurang yakin dengan labelnya, informasi ini perlu didokumentasikan.
+
+**Implementasi:**
+
+| Metode | Deskripsi |
+|--------|-----------|
+| Atribut tambahan | Tambahkan field "confidence" pada anotasi |
+| Kelas khusus | Gunakan suffix "_uncertain" (contoh: M2_uncertain) |
+| File terpisah | Catat ID gambar dan box yang tidak pasti |
+
+**Format dengan atribut:**
+```
+# class_id x_center y_center width height confidence
+0 0.5000 0.4000 0.1000 0.1500 1.0
+1 0.3000 0.6000 0.1200 0.1800 0.7  # uncertain
+```
+
+**Kegunaan:**
+- Dapat digunakan sebagai sample weight saat training
+- Analisis kasus-kasus yang sulit
+- Evaluasi konsistensi antar pakar
+
+### 2.4.6 Target Kecepatan
 
 | Akurasi Auto-Label | Target per Menit |
 |--------------------|------------------|
@@ -335,25 +378,28 @@ Penambahan kelas opsional tergantung pada kebutuhan analisis.
 - [ ] Install Ultralytics (`pip install ultralytics`)
 - [ ] Siapkan struktur folder dataset
 - [ ] Siapkan dataset.yaml
+- [ ] Cari model pretrained tandan sawit di Roboflow (mAP tinggi)
 
 ### Pre-Labeling
 
-- [ ] Label manual 50-100 gambar (seed data)
-- [ ] Training YOLOv8-Nano
-- [ ] Evaluasi mAP pada validation set
-- [ ] Export model ke ONNX
-- [ ] Test auto-label pada 10 gambar
+- [ ] Prelabel deteksi dengan model pretrained (box only)
+- [ ] Pakar label kelas untuk 100 pohon (400 images)
+- [ ] Train classifier dari seed data
+- [ ] Auto-label kelas untuk sisa dataset
+- [ ] Test hasil auto-label pada 10 gambar
 
 ### Labeling dengan Pakar
 
-- [ ] Koordinasi jadwal dengan pakar
-- [ ] Jalankan auto-label pada full dataset
-- [ ] Sesi validasi dengan pakar
+- [ ] Koordinasi jadwal dengan 4 pakar GMK
+- [ ] Siapkan 2 tim paralel
+- [ ] Jalankan sesi validasi (3-5 hari x 7 jam)
+- [ ] Dokumentasi ketidakyakinan pakar
 - [ ] Export dataset final
 
 ### Verifikasi
 
 - [ ] Cek distribusi label per kelas
+- [ ] Analisis label dengan ketidakyakinan
 - [ ] Verifikasi format file
 - [ ] Split train/val (80/20)
 - [ ] Backup dataset
