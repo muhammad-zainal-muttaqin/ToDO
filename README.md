@@ -134,7 +134,7 @@ Spesifikasi dan protokol pengumpulan data:
 
 | Tool | Fungsi | URL |
 |------|--------|-----|
-| AnyLabeling | Labeling + auto-label | github.com/vietanhdev/anylabeling |
+| AnyLabeling | Labeling + auto-label | [github.com/vietanhdev/anylabeling](https://github.com/vietanhdev/anylabeling) |
 | Ultralytics | YOLOv8 training | github.com/ultralytics/ultralytics |
 | Roboflow | Dataset management + pretrained models | roboflow.com |
 

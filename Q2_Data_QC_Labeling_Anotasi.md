@@ -88,7 +88,7 @@ Auto-labeling bertujuan untuk menghasilkan anotasi awal (pre-label) yang akan di
 
 | Aspek | Spesifikasi |
 |-------|-------------|
-| Repository | github.com/vietanhdev/anylabeling |
+| Repository | [github.com/vietanhdev/anylabeling](https://github.com/vietanhdev/anylabeling) |
 | Lisensi | Open Source |
 | Platform | Windows, macOS, Linux |
 | Fitur | YOLO, SAM, batch processing |
