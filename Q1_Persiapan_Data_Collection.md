@@ -8,16 +8,16 @@ Dokumen ini menjelaskan spesifikasi dan protokol pengumpulan data untuk proyek d
 
 ## 1.2 Tim Pelaksana
 
-| Kategori | Kelompok | Target | Tugas |
+| Kategori | Personel | Target | Tugas |
 |----------|----------|--------|-------|
-| Data Reguler | 10 kelompok surveyor | 80-100 pohon/kelompok | Pengambilan foto 4 sisi |
-| Data Tambahan | Tim 11 (Zainal) | 50 pohon keliling + 10 pohon ukur tandan | Pengukuran fisik + foto |
+| Data Reguler | 10 orang (5 tim, 2 orang/tim) | 150-200 pohon/tim | Pengambilan foto 4 sisi |
+| Data Tambahan | 1 tim | 50 pohon | Pengukuran fisik + foto |
 | Data Eksperimen | Tim khusus | 50 pohon | 3 metode (4 sisi, 8 sisi, video) |
-| **Total** | **11+ kelompok** | **800-1000 pohon** | - |
+| **Total** | **6 tim** | **750-1000 pohon** | - |
 
 ---
 
-## 1.3 Pengumpulan Data Reguler (800-1000 Pohon)
+## 1.3 Pengumpulan Data Reguler (750-1000 Pohon)
 
 ### 1.3.1 Spesifikasi Kamera
 

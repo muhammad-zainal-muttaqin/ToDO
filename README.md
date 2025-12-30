@@ -24,17 +24,16 @@ Dokumen ini menyediakan panduan teknis untuk proyek deteksi dan klasifikasi tand
 
 Spesifikasi dan protokol pengumpulan data:
 
-**Data Reguler (800-1000 Pohon)**
-- 10 kelompok surveyor, 80-100 pohon per kelompok
+**Data Reguler (750-1000 Pohon)**
+- 10 orang (5 tim, 2 orang/tim)
+- Target: 150-200 pohon per tim
 - Foto 4 sisi per pohon (U-T-S-B, clockwise)
 - Spesifikasi: 12MP, 4:3, Portrait
 - Jarak: 2-3 meter, tinggi kamera: 150cm
-- Waktu: sesuai jam kerja survei (08:00-16:00)
 
 **Data Tambahan (Pengukuran Fisik)**
-- PIC: Tim 11 (Zainal)
-- 50 pohon: pengukuran keliling batang @150cm
-- 10 pohon: pengukuran 3 tandan per pohon
+- 1 tim khusus
+- Target: 50 pohon
 
 **Data Eksperimen (50 Pohon)**
 - 3 metode dibandingkan:
