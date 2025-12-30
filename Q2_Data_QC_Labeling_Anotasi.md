@@ -193,7 +193,35 @@ results = model.train(
 | Alokasi waktu | 3-5 hari x 7 jam/hari |
 | Lokasi | Kantor GMK atau sewa meeting space (??) |
 
-### 2.4.2 Pembagian Peran
+### 2.4.2 Analisis Feasibility & Jadwal Harian
+
+**Analisis Feasibility:**
+Workflow ini dinilai **sangat layak (feasible)** karena:
+1.  **Deteksi Objek:** Tandan buah sawit memiliki fitur visual yang kontras terhadap batang dan daun, sehingga model *pretrained* (YOLOv8) dapat mendeteksi *bounding box* dengan akurasi tinggi meskipun belum dilatih khusus pada dataset ini.
+2.  **Klasifikasi Pakar:** Tugas tersulit bagi AI (membedakan kematangan M1-M4) adalah tugas termudah bagi pakar. Dengan otomatisasi *bounding box*, pakar hanya perlu fokus pada konfirmasi kelas.
+3.  **Efisiensi:** Mengurangi beban kognitif pakar dari "menggambar" menjadi "memilih", yang secara signifikan mempercepat proses tanpa mengurangi kualitas.
+
+**Estimasi Jadwal Harian (8 Jam Total):**
+
+| Waktu | Durasi | Aktivitas |
+|-------|--------|-----------|
+| 08:30 - 09:00 | 30 menit | Persiapan sistem, *load* dataset, dan briefing harian |
+| 09:00 - 10:30 | 90 menit | **Sesi Labeling I** |
+| 10:30 - 10:45 | 15 menit | *Coffee Break* I (Istirahat sejenak) |
+| 10:45 - 12:00 | 75 menit | **Sesi Labeling II** |
+| 12:00 - 13:00 | 60 menit | **Istirahat, Makan Siang, & Sholat** |
+| 13:00 - 15:00 | 120 menit | **Sesi Labeling III** |
+| 15:00 - 15:15 | 15 menit | *Coffee Break* II (Istirahat sejenak) |
+| 15:15 - 16:15 | 60 menit | **Sesi Labeling IV** |
+| 16:15 - 16:30 | 15 menit | *Backup* data harian dan evaluasi progres |
+
+**Ringkasan Waktu Efektif:**
+- **Total Durasi:** 8 jam
+- **Waktu Kerja Efektif:** **~6 jam 45 menit (405 menit)** per hari.
+- **Istirahat/Break:** 1 jam 15 menit.
+- **Estimasi Output:** Dengan asumsi moderat 10 gambar/menit (Akurasi AI 50-80%), satu tim dapat menyelesaikan **~4.000 gambar per hari**. Dengan 2 tim paralel, target 3.000 - 4.000 gambar total dapat diselesaikan dengan sangat nyaman dalam 1-2 hari kerja.
+
+### 2.4.3 Pembagian Peran
 
 | Peran | Tugas |
 |-------|-------|
@@ -232,13 +260,20 @@ results = model.train(
               |
               v
 +--------------------------------+
-| 5. Tandai ketidakyakinan       |
+| 5. Validasi total count        |
+|    - Cek jumlah total tandan   |
+|      per view/pohon            |
++--------------------------------+
+              |
+              v
++--------------------------------+
+| 6. Tandai ketidakyakinan       |
 |    (jika pakar tidak yakin)    |
 +--------------------------------+
               |
               v
 +--------------------------------+
-| 6. Simpan dan lanjut           |
+| 7. Simpan dan lanjut           |
 +--------------------------------+
 ```
 
@@ -279,11 +314,18 @@ Saat validasi kelas, jika pakar kurang yakin dengan labelnya, informasi ini perl
 
 ### 2.4.6 Target Kecepatan
 
-| Akurasi Auto-Label | Target per Menit |
-|--------------------|------------------|
-| > 80% | 15-20 gambar |
-| 50-80% | 8-12 gambar |
-| < 50% | 4-6 gambar |
+Tabel di bawah menunjukkan estimasi throughput (jumlah gambar yang divalidasi) oleh pakar berdasarkan kualitas hasil estimasi awal dari model AI (Auto-Label):
+
+| Akurasi Auto-Label | Target per Menit | Beban Kerja Pakar |
+|--------------------|------------------|-------------------|
+| **Sangat Baik (> 80%)** | 15-20 gambar | Pakar hanya melakukan konfirmasi cepat dan sesekali koreksi minor. |
+| **Cukup (50-80%)** | 8-12 gambar | Pakar perlu memperbaiki beberapa bounding box dan mengubah label kelas yang salah. |
+| **Rendah (< 50%)** | 4-6 gambar | Pakar praktis melakukan labeling ulang karena hasil AI terlalu banyak error. |
+
+**Penjelasan Logika:**
+- **Akurasi Tinggi:** Semakin akurat model pre-labeling, semakin sedikit interaksi manual yang diperlukan. Fokus pakar beralih dari "menggambar" menjadi "memverifikasi".
+- **Validasi Tree Count:** Penambahan langkah validasi jumlah total tandan per pohon (langkah ke-5 pada alur 2.4.3) mungkin akan sedikit menurunkan throughput ini, namun sangat kritikal untuk memastikan tidak ada tandan yang terlewat (False Negative) di setiap sudut pandang.
+- **Konsistensi vs Kecepatan:** Meskipun ada target kecepatan, akurasi klasifikasi (M1-M4) dan ketepatan jumlah tandan tetap menjadi prioritas utama.
 
 ---
 
