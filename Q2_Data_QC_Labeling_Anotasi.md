@@ -219,7 +219,7 @@ Workflow ini dinilai **sangat layak (feasible)** karena:
 - **Total Durasi:** 8 jam
 - **Waktu Kerja Efektif:** **~6 jam 45 menit (405 menit)** per hari.
 - **Istirahat/Break:** 1 jam 15 menit.
-- **Estimasi Output:** Dengan asumsi moderat 10 gambar/menit (Akurasi AI 50-80%), satu tim dapat menyelesaikan **~4.000 gambar per hari**. Dengan 2 tim paralel, target 3.000 - 4.000 gambar total dapat diselesaikan dengan sangat nyaman dalam 1-2 hari kerja.
+- **Estimasi Output:** Dengan asumsi sangat realistis **1 - 2 gambar per menit** (rata-rata 30-60 detik per gambar untuk diskusi mendalam pakar), satu tim dapat menyelesaikan **~400 - 800 gambar per hari**. Dengan 2 tim paralel, target 4.000 gambar total diperkirakan akan selesai dalam waktu **~3 - 5 hari kerja**. Angka ini memberikan ruang yang cukup untuk menjaga kualitas data tanpa kelelahan berlebih.
 
 ### 2.4.3 Pembagian Peran
 
@@ -314,18 +314,18 @@ Saat validasi kelas, jika pakar kurang yakin dengan labelnya, informasi ini perl
 
 ### 2.4.6 Target Kecepatan
 
-Tabel di bawah menunjukkan estimasi throughput (jumlah gambar yang divalidasi) oleh pakar berdasarkan kualitas hasil estimasi awal dari model AI (Auto-Label):
+Tabel di bawah menunjukkan estimasi throughput yang paling realistis dengan mengutamakan presisi pakar:
 
-| Akurasi Auto-Label | Target per Menit | Beban Kerja Pakar |
-|--------------------|------------------|-------------------|
-| **Sangat Baik (> 80%)** | 15-20 gambar | Pakar hanya melakukan konfirmasi cepat dan sesekali koreksi minor. |
-| **Cukup (50-80%)** | 8-12 gambar | Pakar perlu memperbaiki beberapa bounding box dan mengubah label kelas yang salah. |
-| **Rendah (< 50%)** | 4-6 gambar | Pakar praktis melakukan labeling ulang karena hasil AI terlalu banyak error. |
+| Akurasi Auto-Label | Target per Menit | Estimasi Waktu / Gambar | Beban Kerja Tim |
+|--------------------|------------------|-------------------------|-------------------|
+| **Sangat Baik (> 80%)** | 2 gambar | 30 detik | Konfirmasi matang, pengecekan tree count cepat. |
+| **Cukup (50-80%)** | 1 gambar | 60 detik | Diskusi klasifikasi M1-M4, koreksi posisi box. |
+| **Rendah (< 50%)** | 1 gambar / 2 menit | 120 detik | Labeling ulang hampir total, analisa oklusi pelepah. |
 
-**Penjelasan Logika:**
-- **Akurasi Tinggi:** Semakin akurat model pre-labeling, semakin sedikit interaksi manual yang diperlukan. Fokus pakar beralih dari "menggambar" menjadi "memverifikasi".
-- **Validasi Tree Count:** Penambahan langkah validasi jumlah total tandan per pohon (langkah ke-5 pada alur 2.4.3) mungkin akan sedikit menurunkan throughput ini, namun sangat kritikal untuk memastikan tidak ada tandan yang terlewat (False Negative) di setiap sudut pandang.
-- **Konsistensi vs Kecepatan:** Meskipun ada target kecepatan, akurasi klasifikasi (M1-M4) dan ketepatan jumlah tandan tetap menjadi prioritas utama.
+**Catatan Realitas Lapangan:**
+- **Validasi Multi-View:** Karena satu pohon difoto dari 4 sisi, pakar seringkali perlu membandingkan satu sisi dengan sisi lainnya (sinkronisasi) untuk memastikan tandan yang sama tidak dihitung dua kali. Hal ini secara signifikan memakan waktu.
+- **Diskusi Pakar:** Dengan 2 pakar per tim, akan ada proses diskusi untuk kasus-kasus marginal (tandan di perbatasan kelas kematangan), yang sangat penting untuk konsistensi dataset.
+- **Kualitas Berkelanjutan:** Konsistensi labeling meningkat saat tim diberikan waktu yang cukup untuk setiap gambar, mengurangi risiko *error* akibat terburu-buru.
 
 ---
 
